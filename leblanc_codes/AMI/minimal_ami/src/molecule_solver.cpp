@@ -603,13 +603,13 @@ std::pair<std::complex<double>, std::complex<double>> mband::lcalc_sampled_sigma
 
 		for (int i = 0; i<Utype.size();i++){
 			if (Utype[i]==0 || Utype[i]==1){
-				form_factor= form_factor*2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
+				form_factor= form_factor*0.25*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
 			}
 			else {
-				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));	
+				form_factor= form_factor*(1.0+  0.25*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));	
 	
 			}	
-		}
+		}		
 	}
 		
 

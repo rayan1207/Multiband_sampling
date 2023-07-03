@@ -27,8 +27,7 @@
 #include <typeinfo> 
 #include <string>
 #include <utility> 
-#include <locale>
-#include <stdexcept>
+
 
 class mband{
 private:
@@ -81,7 +80,6 @@ struct params_param {
 	double molec_beta;
 	int molec_mfreq;
 	int time;
-	double V;
 	
 };
 

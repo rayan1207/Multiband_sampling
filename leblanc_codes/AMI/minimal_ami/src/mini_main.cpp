@@ -176,6 +176,7 @@ auto currentTime = startTime;
 
 while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime).count() < params.time) {
     for (int i = 0; i < sigma_ToSum.size(); i++) {
+        print2d(sigma_ToSum[i].Alpha);
         for (int j = 0; j < extern_list.size(); j++) {
             int speciesSize = sigma_ToSum[i].fermionic_edge_species.size();
             globalSums[i][j].resize(speciesSize, std::complex<double>(0.0, 0.0));
@@ -220,6 +221,18 @@ std::cout<<"sample of each process " << totalSampleCount;
 if (rank == 0) {
 std::cout << "Global Total Sample Count: " << globalTotalSampleCount << std::endl;
 double U = 1;
+std::cout << "molecular: " << params.molecular << std::endl;
+std::cout << "E_reg: " << params.E_reg << std::endl;
+std::cout << "lattice_type: " << params.lattice_type << std::endl;
+std::cout << "set_precision: " << params.set_precision << std::endl;
+std::cout << "hatree_fock: " << std::boolalpha << params.hatree_fock << std::endl;
+std::cout << "tp: " << params.tp << std::endl;
+std::cout << "tperp_p: " << params.tperp_p << std::endl;
+std::cout << "tperp: " << params.tperp << std::endl;
+std::cout << "Mc_num" << params.MC_num << std::endl;
+std::cout << "max: " << params.max_ord << std::endl;
+std::cout << "min_ord" << params.min_ord << std::endl;
+std::cout << "line1 " << params.in<<" " <<params.out<< std::endl;
 
 std::ofstream outputFile;
 if (params.lattice_type==1){
@@ -288,23 +301,8 @@ outputFile.open("../results/lattice/extended/output.txt");
 	else {
         std::cout << "Error: Failed to open the result file." << std::endl;
     }
-std::cout << "molecular: " << params.molecular << std::endl;
-std::cout << "E_reg: " << params.E_reg << std::endl;
-std::cout << "lattice_type: " << params.lattice_type << std::endl;
-std::cout << "set_precision: " << params.set_precision << std::endl;
-std::cout << "hatree_fock: " << std::boolalpha << params.hatree_fock << std::endl;
-std::cout << "tp: " << params.tp << std::endl;
-std::cout << "tperp_p: " << params.tperp_p << std::endl;
-std::cout << "tperp: " << params.tperp << std::endl;
-std::cout << "Mc_num" << params.MC_num << std::endl;
-std::cout << "max: " << params.max_ord << std::endl;
-std::cout << "min_ord" << params.min_ord << std::endl;
-std::cout << "line1 " << params.in<<" " <<params.out<< std::endl;
-std::cout << "V " << params.V<<" "  <<std::endl;
-std::cout << "time" << params.time<<" " << std::endl;
 
 std::cout << "Global Total Sample Count: " << globalTotalSampleCount << std::endl;
-std::cout << "sample per process: " << samplesPerProcess<< std::endl;
 	}
 	
 

@@ -1,5 +1,5 @@
-min_ord=1		
-max_ord=2
+min_ord=4		
+max_ord=4
 molecular=0
 E_reg=0
 lattice_type=3
@@ -14,5 +14,4 @@ molec_mfreq=1
 in=1
 out=1
 MC_num=200
-time=1
-V=0.125
+time=60
