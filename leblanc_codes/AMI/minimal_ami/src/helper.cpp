@@ -330,6 +330,8 @@ void params_loader(const std::string& filename, mband::params_param& params) {
             params.molec_mfreq= std::stoi(paramValue);
 		else if (paramName == "time")
 			params.time= std::stoi(paramValue);
+		else if (paramName == "V")
+			params.V= std::stod(paramValue);
 
 
 

@@ -83,13 +83,13 @@ data= filtered_df.to_numpy()
 
 
 plt.subplot(1,2,1)
-plt.errorbar(range(len(data[:,9])),data[:,8]+U/2,yerr=data[:,10],fmt='x-')
+plt.errorbar(range(len(data[:,9])),data[:,9]+U/2,yerr=data[:,10],fmt='x-')
 plt.subplot(1,2,2)
 plt.errorbar(range(len(data[:,9])),data[:,11],yerr=data[:,12],fmt='x-')
 plt.show()
 
 result = np.column_stack((np.asarray(data[:,9]+U/2), np.asarray(data[:,10]),np.asarray(data[:,11]), np.asarray(data[:,12])))
-# np.savetxt('result_o3_U4_v05.txt',result)
+np.savetxt('filtered.txt',result)
 
 # grouped_df.to_csv('data.txt', sep=' ', header=False, index=False, float_format='%.7f')
 # grouped_df_ord.to_csv('data_ord.txt', sep=' ', header=False, index=False, float_format='%.7f')
