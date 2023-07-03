@@ -1,8 +1,0 @@
-*~
-*.dat
-CMakeCache.txt
-testing
-*.bak
-build
-install
-compile.sh

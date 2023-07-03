@@ -1,0 +1,142 @@
+Start testing: Feb 22 10:32 NST
+----------------------------------------------------------
+1/4 Testing: fb
+1/4 Test: fb
+Command: "/mnt/c/Users/Rayan/Research/libami/build/test/fb"
+Directory: /mnt/c/Users/Rayan/Research/libami/build
+"fb" start time: Feb 22 10:32 NST
+Output:
+----------------------------------------------------------
+Running main() from /mnt/c/Users/Rayan/Research/libami/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 8 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 8 tests from fermi_bose
+[ RUN      ] fermi_bose.fermi_test
+[       OK ] fermi_bose.fermi_test (2 ms)
+[ RUN      ] fermi_bose.fermi_test_deriv1
+[       OK ] fermi_bose.fermi_test_deriv1 (0 ms)
+[ RUN      ] fermi_bose.fermi_test_deriv2_james
+[       OK ] fermi_bose.fermi_test_deriv2_james (0 ms)
+[ RUN      ] fermi_bose.fermi_test_deriv2
+[       OK ] fermi_bose.fermi_test_deriv2 (0 ms)
+[ RUN      ] fermi_bose.fermi_test_deriv5
+[       OK ] fermi_bose.fermi_test_deriv5 (0 ms)
+[ RUN      ] fermi_bose.bose_test
+[       OK ] fermi_bose.bose_test (0 ms)
+[ RUN      ] fermi_bose.bose_test_deriv1
+[       OK ] fermi_bose.bose_test_deriv1 (0 ms)
+[ RUN      ] fermi_bose.bose_test_deriv2
+[       OK ] fermi_bose.bose_test_deriv2 (0 ms)
+[----------] 8 tests from fermi_bose (2 ms total)
+
+[----------] Global test environment tear-down
+[==========] 8 tests from 1 test suite ran. (2 ms total)
+[  PASSED  ] 8 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"fb" end time: Feb 22 10:32 NST
+"fb" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/4 Testing: helper_functions
+2/4 Test: helper_functions
+Command: "/mnt/c/Users/Rayan/Research/libami/build/test/helper_functions"
+Directory: /mnt/c/Users/Rayan/Research/libami/build
+"helper_functions" start time: Feb 22 10:32 NST
+Output:
+----------------------------------------------------------
+Running main() from /mnt/c/Users/Rayan/Research/libami/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 6 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 6 tests from helper_functions
+[ RUN      ] helper_functions.energy_test
+[       OK ] helper_functions.energy_test (0 ms)
+[ RUN      ] helper_functions.alpha_size
+[       OK ] helper_functions.alpha_size (0 ms)
+[ RUN      ] helper_functions.epsilon_size
+[       OK ] helper_functions.epsilon_size (0 ms)
+[ RUN      ] helper_functions.alpha_vector_diff
+[       OK ] helper_functions.alpha_vector_diff (0 ms)
+[ RUN      ] helper_functions.epsilon_vector_diff
+[       OK ] helper_functions.epsilon_vector_diff (0 ms)
+[ RUN      ] helper_functions.everything_works
+[       OK ] helper_functions.everything_works (0 ms)
+[----------] 6 tests from helper_functions (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 6 tests.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"helper_functions" end time: Feb 22 10:32 NST
+"helper_functions" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/4 Testing: num_test
+3/4 Test: num_test
+Command: "/mnt/c/Users/Rayan/Research/libami/build/test/num_test"
+Directory: /mnt/c/Users/Rayan/Research/libami/build
+"num_test" start time: Feb 22 10:32 NST
+Output:
+----------------------------------------------------------
+Running main() from /mnt/c/Users/Rayan/Research/libami/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from num_test
+[ RUN      ] num_test.o4_test
+[       OK ] num_test.o4_test (1 ms)
+[----------] 1 test from num_test (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (1 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"num_test" end time: Feb 22 10:32 NST
+"num_test" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/4 Testing: construct_tests
+4/4 Test: construct_tests
+Command: "/mnt/c/Users/Rayan/Research/libami/build/test/construct_tests"
+Directory: /mnt/c/Users/Rayan/Research/libami/build
+"construct_tests" start time: Feb 22 10:32 NST
+Output:
+----------------------------------------------------------
+Running main() from /mnt/c/Users/Rayan/Research/libami/build/_deps/googletest-src/googletest/src/gtest_main.cc
+[==========] Running 5 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 5 tests from construct_tests
+[ RUN      ] construct_tests.term_deriv
+[       OK ] construct_tests.term_deriv (0 ms)
+[ RUN      ] construct_tests.term_deriv2
+[       OK ] construct_tests.term_deriv2 (0 ms)
+[ RUN      ] construct_tests.update_g
+[       OK ] construct_tests.update_g (0 ms)
+[ RUN      ] construct_tests.find_poles
+Expect warnings: { WARNING: Pole index exceeds length of g_prod_t: This may result in errors.  Exiting find_poles for safety.
+WARNING: Pole index exceeds length of g_prod_t: This may result in errors.  Exiting find_poles for safety.
+} Warnings caught
+[       OK ] construct_tests.find_poles (0 ms)
+[ RUN      ] construct_tests.o6_ex_count
+[       OK ] construct_tests.o6_ex_count (21 ms)
+[----------] 5 tests from construct_tests (21 ms total)
+
+[----------] Global test environment tear-down
+[==========] 5 tests from 1 test suite ran. (21 ms total)
+[  PASSED  ] 5 tests.
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"construct_tests" end time: Feb 22 10:32 NST
+"construct_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Feb 22 10:32 NST

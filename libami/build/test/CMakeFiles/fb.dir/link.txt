@@ -1,0 +1,1 @@
+/usr/bin/mpicxx  -O3 -std=c++11 -lstdc++fs  -O2 -g -DNDEBUG CMakeFiles/fb.dir/fermi_bose.cpp.o -o fb  -Wl,-rpath,/mnt/c/Users/Rayan/Research/libami/build ../libami.so ../lib/libgtest.a ../lib/libgtest_main.a -lm ../lib/libgtest.a 

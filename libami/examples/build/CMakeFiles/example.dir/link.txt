@@ -1,0 +1,1 @@
+/usr/bin/mpicxx  -O3 -std=c++11 -DUSE_MPI -lstdc++fs -rdynamic CMakeFiles/example.dir/src/examples_main.cpp.o CMakeFiles/example.dir/src/ami_example.cpp.o -o example  -Wl,-rpath,/mnt/c/Users/Rayan/Research/libami/examples/../../libami/install/lib ../../../libami/install/lib/libami.so -lm 
