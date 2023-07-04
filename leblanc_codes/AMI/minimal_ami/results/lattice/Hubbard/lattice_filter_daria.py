@@ -52,10 +52,29 @@ filtered_df = symmetrize(filtered_df)
 filtered_df.to_csv('filtered_output.txt', sep=' ', header=False, index=False, float_format='%.7f')
 
 data= filtered_df.to_numpy()
+
+
+
+amidata = np.loadtxt('sigma_U4_v0.dat')
+xdata = np.arange(0,37,1)
+xdata1 = np.arange(0,37,3)
+plt.suptitle(' truncated order 4 self energy, U/t=4')
 plt.subplot(1,2,1)
-plt.plot(data[:,9]+U/2,'x-')
+plt.errorbar(xdata,amidata[:,0]+U/2,yerr=amidata[:,1],fmt='.-',label='James-AMI')
+plt.errorbar(xdata1,data[:,9]+U/2,yerr=data[:,10],fmt='x-',label='mband-AMI')
+plt.ylabel('real $\Sigma$')
+plt.xticks([0, 12, 24, 36], ['$[0,0]$',
+                            '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
+plt.legend(fontsize=7)
+
 plt.subplot(1,2,2)
-plt.plot(data[:,11],'x-')
+plt.errorbar(xdata,amidata[:,2],yerr=amidata[:,3],fmt='.-',label='James-AMI')
+plt.errorbar(xdata1,data[:,11],yerr=data[:,12],fmt='x-',label='mband-AMI')
+plt.ylabel(r'Imag $\Sigma$')
+plt.xticks([0, 12, 24, 36], ['$[0,0]$',
+                            '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
+plt.tight_layout()
+plt.legend(fontsize=7)
 plt.show()
 
 
