@@ -80,11 +80,11 @@ else if (params.molecular==0&& params.lattice_type ==2){
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_sigma_no_tp/",ggm, max);
+	g.read_ggmp("../graphs/ggm_test/",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
-	g.print_all_edge_info(ggm[1][0].graph_vec[0]);
+	//g.print_all_edge_info(ggm[4][0].graph_vec[0]);
 	
 	std::cout<<"External parameters read are"<<std::endl;
     for(int i=0; i<extern_list.size();i++){
@@ -148,7 +148,6 @@ int  max_ord = params.max_ord;
 
 std::vector<mband::sampler_collector> sigma_ToSum;
 std::vector<AmiGraph::graph_t>sigma_FromGraph;
-MPI_Barrier(MPI_COMM_WORLD);
 for (int i = min_ord; i < max_ord+1; ++i) {
     for (int j = 0; j < ggm[i].size(); ++j) {
         for (int k = 0; k < ggm[i][j].graph_vec.size(); ++k) {
@@ -160,7 +159,6 @@ for (int i = min_ord; i < max_ord+1; ++i) {
 	}
 }
 
-MPI_Barrier(MPI_COMM_WORLD);
 int lattice_type = params.lattice_type;
 int samplesPerProcess = params.MC_num;
 int numIterations = 0;
@@ -173,7 +171,7 @@ std::vector<std::vector<std::vector<std::complex<double>>>> globalSumSquared(sig
 
 auto startTime = std::chrono::high_resolution_clock::now();
 auto currentTime = startTime;
-
+MPI_Barrier(MPI_COMM_WORLD);
 while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime).count() < params.time) {
     for (int i = 0; i < sigma_ToSum.size(); i++) {
         for (int j = 0; j < extern_list.size(); j++) {
@@ -201,7 +199,7 @@ while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime)
                     }
                 }
             }
-
+            MPI_Barrier(MPI_COMM_WORLD);
             MPI_Reduce(localSums[i][j].data(), globalSums[i][j].data(), speciesSize * 2, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
             MPI_Reduce(localSumSquared[i][j].data(), globalSumSquared[i][j].data(), speciesSize * 2, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
         }
@@ -210,7 +208,7 @@ while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime)
     totalSampleCount += samplesPerProcess;
     currentTime = std::chrono::high_resolution_clock::now();
 }
-MPI_Barrier(MPI_COMM_WORLD);
+
 // Compute the global totalSampleCount on rank 0
 int globalTotalSampleCount;
 MPI_Reduce(&totalSampleCount, &globalTotalSampleCount, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -275,7 +273,7 @@ outputFile.open("../results/lattice/extended/output.txt");
 							std::cout << -1 << " ";
 							outputFile << -1 << " ";
 														}
-
+                    outputFile << i << " ";
                     std::cout << std::endl;
                     outputFile << std::endl;
                 }

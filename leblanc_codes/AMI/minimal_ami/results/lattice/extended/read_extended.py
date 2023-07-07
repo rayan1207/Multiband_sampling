@@ -57,9 +57,9 @@ print(df)
 grouped_df = df.groupby(df.columns[1:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
 # grouped_df= df.groupby(df.columns[:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
 
-# filtered_df = grouped_df[(grouped_df[0] == 4) &(grouped_df[8] == 1) & (grouped_df[9] == 1)]
-
 filtered_df = grouped_df[(grouped_df[8] == 1) & (grouped_df[9] == 1)]
+
+# filtered_df = grouped_df[(grouped_df[8] == 1) & (grouped_df[9] == 1)]
 
 filtered_df = symmetrize(filtered_df)
 print(filtered_df)
@@ -69,11 +69,11 @@ filtered_df.to_csv('filtered_output.txt', sep=' ', header=False, index=False, fl
 
 
 data= filtered_df.to_numpy()
-# plt.subplot(1,2,1)
-# plt.errorbar(range(len(data[:,9])),data[:,9]+U/2,yerr=data[:,10],fmt='x-')
-# plt.subplot(1,2,2)
-# plt.errorbar(range(len(data[:,9])),data[:,11],yerr=data[:,12],fmt='x-')
-# plt.show()
+plt.subplot(1,2,1)
+plt.errorbar(range(len(data[:,9])),data[:,9]+U/2,yerr=data[:,10],fmt='x-')
+plt.subplot(1,2,2)
+plt.errorbar(range(len(data[:,9])),data[:,11],yerr=data[:,12],fmt='x-')
+plt.show()
 
 # plt.subplot(1,2,1)
 # plt.errorbar(range(len(data[:,9])),data[:,10]+U/2,yerr=data[:,11],fmt='x-')
@@ -82,11 +82,11 @@ data= filtered_df.to_numpy()
 # plt.show()
 
 
-plt.subplot(1,2,1)
-plt.errorbar(range(len(data[:,9])),data[:,9]+U/2,yerr=data[:,10],fmt='x-')
-plt.subplot(1,2,2)
-plt.errorbar(range(len(data[:,9])),data[:,11],yerr=data[:,12],fmt='x-')
-plt.show()
+# plt.subplot(1,2,1)
+# plt.errorbar(range(len(data[:,9])),data[:,9]+U/2,yerr=data[:,10],fmt='x-')
+# plt.subplot(1,2,2)
+# plt.errorbar(range(len(data[:,9])),data[:,11],yerr=data[:,12],fmt='x-')
+# plt.show()
 
 result = np.column_stack((np.asarray(data[:,9]+U/2), np.asarray(data[:,10]),np.asarray(data[:,11]), np.asarray(data[:,12])))
 np.savetxt('filtered.txt',result)

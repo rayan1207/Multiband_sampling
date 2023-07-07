@@ -515,6 +515,13 @@ std::pair<std::complex<double>, std::complex<double>> mband::lcalc_sampled_sigma
         gs[i] = {Epsilon[i], Alpha[i]};
         gs_vec.push_back(gs[i]);
     }
+	/*
+	std::cout<<"epsilon are \n";
+	print2d(Epsilon);
+	
+	std::cout<<"alpha are \n";
+	print2d(Alpha);
+	*/
 
     AmiBase::g_prod_t R0 = gs_vec;
     AmiBase::S_t S_array;
@@ -535,7 +542,6 @@ std::pair<std::complex<double>, std::complex<double>> mband::lcalc_sampled_sigma
     std::random_device rd;
     std::default_random_engine engine(rd());
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
-
     int kspace = Alpha[0].size() - 1;
     std::complex<double> localSum(0.0, 0.0);
     std::complex<double> localSumOfSquares(0.0, 0.0);
@@ -562,6 +568,9 @@ std::pair<std::complex<double>, std::complex<double>> mband::lcalc_sampled_sigma
             summed_momenta.push_back({qx, qy});
         }
 	double form_factor = 1;
+	
+	//std::cout <<"printing summed momenta" << std::endl;
+	//print2d(summed_momenta);
     
 	/////////////////////////form factor for exteded hubbard////////////////////
     /*
@@ -626,6 +635,14 @@ std::pair<std::complex<double>, std::complex<double>> mband::lcalc_sampled_sigma
         }
 
         std::vector<std::complex<double>> energy_t = mband::generate_ept(Epsilon, energy);
+		/*
+		std::cout <<"printing energy of the alpha" << std::endl;
+		std::cout <<"(";
+		for (auto e : energy_t){	
+			std::cout << e.real() <<",";
+		}
+		std::cout <<")"<<std::endl;
+		*/
 
         AmiBase::ami_vars external(energy_t, frequency, ext_params.BETA_);
         std::complex<double> result =form_factor* prefactor * ami.evaluate(test_amiparms, R_array, P_array, S_array, external);
