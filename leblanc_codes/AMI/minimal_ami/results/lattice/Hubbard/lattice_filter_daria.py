@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-file_path = "result_fullo1234_U1.txt"
+file_path = "output.txt"
 # data = np.loadtxt(file_path)
 
 U =4
@@ -31,11 +31,11 @@ for i in range(4):
 
 # Group by the first 10 columns and sum the values in columns 9 and 10
 
-grouped_df = df.groupby(df.columns[1:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
-# grouped_df = df.groupby(df.columns[:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
+# grouped_df = df.groupby(df.columns[1:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
+grouped_df = df.groupby(df.columns[:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
 
-filtered_df = grouped_df[ (grouped_df[8] == 1) & (grouped_df[9] == 1)  ]
-# filtered_df = grouped_df[(grouped_df[8] == 1) & (grouped_df[9] == 1)  & (grouped_df[0] == 4)]
+# filtered_df = grouped_df[ (grouped_df[8] == 1) & (grouped_df[9] == 1)  ]
+filtered_df = grouped_df[(grouped_df[8] == 1) & (grouped_df[9] == 1)  & (grouped_df[0] == 4)]
 # filtered_df = filtered_df.sort_values(by=[ext_vars[:, 5], ext_vars[:, 6]], axis=0)
 
 
@@ -55,13 +55,36 @@ data= filtered_df.to_numpy()
 
 
 
-amidata = np.loadtxt('sigma_U4_v0.dat')
+# amidata = np.loadtxt('sigma_U4_v0.dat')
+# xdata = np.arange(0,37,1)
+# xdata1 = np.arange(0,37,3)
+# plt.suptitle(' truncated order 4 self energy, U/t=4')
+# plt.subplot(1,2,1)
+# plt.errorbar(xdata,amidata[:,0]+U/2,yerr=amidata[:,1],fmt='.-',label='James-AMI')
+# plt.errorbar(xdata1,data[:,9]+U/2,yerr=data[:,10],fmt='x-',label='mband-AMI')
+# plt.ylabel('real $\Sigma$')
+# plt.xticks([0, 12, 24, 36], ['$[0,0]$',
+#                             '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
+# plt.legend(fontsize=7)
+
+# plt.subplot(1,2,2)
+# plt.errorbar(xdata,amidata[:,2],yerr=amidata[:,3],fmt='.-',label='James-AMI')
+# plt.errorbar(xdata1,data[:,11],yerr=data[:,12],fmt='x-',label='mband-AMI')
+# plt.ylabel(r'Imag $\Sigma$')
+# plt.xticks([0, 12, 24, 36], ['$[0,0]$',
+#                             '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
+# plt.tight_layout()
+# plt.legend(fontsize=7)
+# plt.show()
+
+
+amidata = np.loadtxt('sigma_U4_o4_v0.dat')
 xdata = np.arange(0,37,1)
 xdata1 = np.arange(0,37,3)
-plt.suptitle(' truncated order 4 self energy, U/t=4')
+plt.suptitle('  order 4 self energy, U/t=4')
 plt.subplot(1,2,1)
 plt.errorbar(xdata,amidata[:,0]+U/2,yerr=amidata[:,1],fmt='.-',label='James-AMI')
-plt.errorbar(xdata1,data[:,9]+U/2,yerr=data[:,10],fmt='x-',label='mband-AMI')
+plt.errorbar(xdata1,data[:,10]+U/2,yerr=data[:,11],fmt='x-',label='mband-AMI')
 plt.ylabel('real $\Sigma$')
 plt.xticks([0, 12, 24, 36], ['$[0,0]$',
                             '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
@@ -69,7 +92,7 @@ plt.legend(fontsize=7)
 
 plt.subplot(1,2,2)
 plt.errorbar(xdata,amidata[:,2],yerr=amidata[:,3],fmt='.-',label='James-AMI')
-plt.errorbar(xdata1,data[:,11],yerr=data[:,12],fmt='x-',label='mband-AMI')
+plt.errorbar(xdata1,data[:,12],yerr=data[:,13],fmt='x-',label='mband-AMI')
 plt.ylabel(r'Imag $\Sigma$')
 plt.xticks([0, 12, 24, 36], ['$[0,0]$',
                             '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
@@ -78,7 +101,10 @@ plt.legend(fontsize=7)
 plt.show()
 
 
-result = np.column_stack((np.asarray(data[:,9]+U/2), np.asarray(data[:,10]),np.asarray(data[:,11]), np.asarray(data[:,12])))
+
+
+
+# result = np.column_stack((np.asarray(data[:,9]+U/2), np.asarray(data[:,10]),np.asarray(data[:,11]), np.asarray(data[:,12])))
 # np.savetxt('result_o3_U4_v0.txt',result)
 
 

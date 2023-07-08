@@ -502,8 +502,9 @@ std::complex<double> mband::lcalc_sampled_sigma(AmiGraph::graph_t &gself, std::v
 */
 
 
-std::pair<std::complex<double>, std::complex<double>> mband::lcalc_sampled_sigma(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<int> &Utype,
+std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled_sigma(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<int> &Utype,
  std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param) {
+	int cutoff_num = 0;
     AmiGraph g(AmiBase::Sigma, 0);
     AmiBase ami;
     int ord = g.graph_order(gself);
@@ -541,7 +542,7 @@ std::pair<std::complex<double>, std::complex<double>> mband::lcalc_sampled_sigma
 
     std::random_device rd;
     std::default_random_engine engine(rd());
-    std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    std::uniform_real_distribution<double> distribution(0, 1.0);
     int kspace = Alpha[0].size() - 1;
     std::complex<double> localSum(0.0, 0.0);
     std::complex<double> localSumOfSquares(0.0, 0.0);
@@ -645,12 +646,20 @@ std::pair<std::complex<double>, std::complex<double>> mband::lcalc_sampled_sigma
 		*/
 
         AmiBase::ami_vars external(energy_t, frequency, ext_params.BETA_);
-        std::complex<double> result =form_factor* prefactor * ami.evaluate(test_amiparms, R_array, P_array, S_array, external);
-        localSum += result;
+	
+        std::complex<double> raw_coeff = ami.evaluate(test_amiparms, R_array, P_array, S_array, external);
+		std::complex<double> result =form_factor* prefactor *raw_coeff;
+		if (abs(raw_coeff) > param.cutoff_value && ord==4) {
+			cutoff_num++;
+       		
+		}
+		else{
+        localSum +=  result;
         localSumOfSquares += std::complex<double> (std::pow(result.real(),2),std::pow(result.imag(),2)) ;
+		}
     }
-
-    return std::make_pair(localSum, localSumOfSquares);
+    int samples = MC_num-cutoff_num;
+    return  std::make_tuple(localSum, localSumOfSquares, samples);
 }
 	
 

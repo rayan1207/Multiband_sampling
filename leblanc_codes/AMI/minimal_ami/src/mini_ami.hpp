@@ -29,6 +29,7 @@
 #include <utility> 
 #include <locale>
 #include <stdexcept>
+#include <tuple>
 
 class mband{
 private:
@@ -82,7 +83,7 @@ struct params_param {
 	int molec_mfreq;
 	int time;
 	double V;
-	
+	double cutoff_value;
 };
 
 
@@ -118,7 +119,7 @@ void sigma_sampler( AmiGraph::graph_t &gself, sampler_collector& collector);
 void write_output(std::string outputfile,output_collector& collector,std::vector<double> beta_ext_vec,std::vector<double> mfreq_ext_vec);
 void calculate_sampled_sigma(AmiGraph::graph_t &gself, sampler_collector& samp_collector,  output_collector& out_collector, std::vector<double> beta_ext_vec,std::vector<double> mfreq_ext_vec );
 void calculate_sampled_sigma_ext(AmiGraph::graph_t &gself, sampler_collector& samp_collector,  output_collector& out_collector, std::vector<double> beta_ext_vec,std::vector<double> mfreq_ext_vec,std::vector<int> line );
-std::pair<std::complex<double>, std::complex<double>> lcalc_sampled_sigma(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<int> &Utype, std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param);
+std::tuple<std::complex<double>, std::complex<double>, int> lcalc_sampled_sigma(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<int> &Utype, std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param);
 
 
 double non_local_U_formfactor(std::vector<double> vq);

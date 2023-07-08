@@ -164,10 +164,14 @@ int samplesPerProcess = params.MC_num;
 int numIterations = 0;
 int totalSampleCount = 0;
 
+
 std::vector<std::vector<std::vector<std::complex<double>>>> localSums(sigma_ToSum.size(), std::vector<std::vector<std::complex<double>>>(extern_list.size()));
 std::vector<std::vector<std::vector<std::complex<double>>>> localSumSquared(sigma_ToSum.size(), std::vector<std::vector<std::complex<double>>>(extern_list.size()));
 std::vector<std::vector<std::vector<std::complex<double>>>> globalSums(sigma_ToSum.size(), std::vector<std::vector<std::complex<double>>>(extern_list.size()));
 std::vector<std::vector<std::vector<std::complex<double>>>> globalSumSquared(sigma_ToSum.size(), std::vector<std::vector<std::complex<double>>>(extern_list.size()));
+std::vector<std::vector<std::vector<int>>> localSample(sigma_ToSum.size(), std::vector<std::vector<int>>(extern_list.size()));
+std::vector<std::vector<std::vector<int>>> globalSample(sigma_ToSum.size(), std::vector<std::vector<int>>(extern_list.size()));
+
 
 auto startTime = std::chrono::high_resolution_clock::now();
 auto currentTime = startTime;
@@ -180,38 +184,53 @@ while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime)
             localSums[i][j].resize(speciesSize, std::complex<double>(0.0, 0.0));
             globalSumSquared[i][j].resize(speciesSize, std::complex<double>(0.0, 0.0));
             localSumSquared[i][j].resize(speciesSize, std::complex<double>(0.0, 0.0));
+			localSample[i][j].resize(speciesSize, 0);
+            globalSample[i][j].resize(speciesSize, 0);
             if (params.in == -1 && params.out == -1) {
                 for (int k = 0; k < speciesSize; k++) {
-                    std::pair<std::complex<double>, std::complex<double>> result;
-                    result = mb.lcalc_sampled_sigma(sigma_ToSum[i].graph, sigma_ToSum[i].Epsilon, sigma_ToSum[i].Alpha, sigma_ToSum[i].bosonic_Alpha, sigma_ToSum[i].Uindex[k], sigma_ToSum[i].fermionic_edge_species[k],
-                                                    extern_list[j], samplesPerProcess, params);
-                    localSums[i][j][k] += result.first;
-                    localSumSquared[i][j][k] += result.second;
+					  std::tuple<std::complex<double>, std::complex<double>, int> result;
+                        result = mb.lcalc_sampled_sigma(sigma_ToSum[i].graph, sigma_ToSum[i].Epsilon, sigma_ToSum[i].Alpha, sigma_ToSum[i].bosonic_Alpha, sigma_ToSum[i].Uindex[k], sigma_ToSum[i].fermionic_edge_species[k],
+                                                        extern_list[j], samplesPerProcess, params);
+                        localSums[i][j][k] += std::get<0>(result);
+                        localSumSquared[i][j][k] += std::get<1>(result);
+						localSample[i][j][k] += std::get<2>(result);
+              
+                
                 }
             } else {
                 for (int k = 0; k < speciesSize; k++) {
                     if (sigma_ToSum[i].external_line[k][0] == params.in && sigma_ToSum[i].external_line[k][1] == params.out) {
-                        std::pair<std::complex<double>, std::complex<double>> result;
+                        std::tuple<std::complex<double>, std::complex<double>, int> result;
                         result = mb.lcalc_sampled_sigma(sigma_ToSum[i].graph, sigma_ToSum[i].Epsilon, sigma_ToSum[i].Alpha, sigma_ToSum[i].bosonic_Alpha, sigma_ToSum[i].Uindex[k], sigma_ToSum[i].fermionic_edge_species[k],
                                                         extern_list[j], samplesPerProcess, params);
-                        localSums[i][j][k] += result.first;
-                        localSumSquared[i][j][k] += result.second;
+                        localSums[i][j][k] += std::get<0>(result);
+                        localSumSquared[i][j][k] += std::get<1>(result);
+					    ///here my code is crashing
+						localSample[i][j][k] += std::get<2>(result);
+					
+						
+						
+						     
                     }
                 }
             }
             MPI_Barrier(MPI_COMM_WORLD);
             MPI_Reduce(localSums[i][j].data(), globalSums[i][j].data(), speciesSize * 2, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
             MPI_Reduce(localSumSquared[i][j].data(), globalSumSquared[i][j].data(), speciesSize * 2, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+			MPI_Reduce(localSample[i][j].data(), globalSample[i][j].data(), speciesSize, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
         }
     }
-    numIterations++;
+ 
     totalSampleCount += samplesPerProcess;
+
     currentTime = std::chrono::high_resolution_clock::now();
 }
 
 // Compute the global totalSampleCount on rank 0
+
 int globalTotalSampleCount;
 MPI_Reduce(&totalSampleCount, &globalTotalSampleCount, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
 
 std::cout<<"sample of each process " << totalSampleCount;
 // Print the global totalSampleCount on rank 0
@@ -241,10 +260,10 @@ outputFile.open("../results/lattice/extended/output.txt");
                 for (int k = 0; k < speciesSize; k++) {
 					double Ufactor = std::pow(U,g.graph_order(sigma_ToSum[i].graph));
 					
-                    std::complex<double> integral =globalSums[i][j][k] / static_cast<double>(globalTotalSampleCount);
+                    std::complex<double> integral =globalSums[i][j][k] / static_cast<double>(globalSample[i][j][k] );
 			        std::complex<double> integral_sq = globalSumSquared[i][j][k] ;
-					double integral_err_real =  mb.Stdev(integral_sq.real(), integral.real(),globalTotalSampleCount );
-					double integral_err_imag =  mb.Stdev(integral_sq.imag(), integral.imag(),globalTotalSampleCount );
+					double integral_err_real =  mb.Stdev(integral_sq.real(), integral.real(),globalSample[i][j][k]  );
+					double integral_err_imag =  mb.Stdev(integral_sq.imag(), integral.imag(),globalSample[i][j][k]  );
 					
 					
 
@@ -273,7 +292,7 @@ outputFile.open("../results/lattice/extended/output.txt");
 							std::cout << -1 << " ";
 							outputFile << -1 << " ";
 														}
-                    outputFile << i << " ";
+                    std::cout << i << " "<<globalSample[i][j][k];
                     std::cout << std::endl;
                     outputFile << std::endl;
                 }

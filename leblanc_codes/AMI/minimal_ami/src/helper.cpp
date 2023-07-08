@@ -332,6 +332,8 @@ void params_loader(const std::string& filename, mband::params_param& params) {
 			params.time= std::stoi(paramValue);
 		else if (paramName == "V")
 			params.V= std::stod(paramValue);
+		else if (paramName == "cutoff")
+			params.cutoff_value= std::stod(paramValue);
 
 
 
