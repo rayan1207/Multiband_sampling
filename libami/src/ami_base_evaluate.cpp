@@ -319,12 +319,12 @@ std::complex<double> AmiBase::star(ami_parms &parms, SorF_t K, Ri_t R,
     }
 
 	// These are necessary debugging lines that should stay 
-     //std::cout<<"In star K[]*R"<<std::endl;
-     if(std::abs( std::real(term))>1000){
-     print_output=true;
-     std::cout<< std::setprecision(20)<< i<<" "<< K[0][i] <<" "<<
-     std::real(gprod)<<" "<<std::imag(gprod)<< " "<<std::real(term)<<" "<<
-     std::imag(term) <<" CO="<<output <<std::endl;}
+    // std::cout<<"In star K[]*R"<<std::endl;
+    // if(std::abs( std::real(term))>1000){
+    // print_output=true;
+    // std::cout<< std::setprecision(20)<< i<<" "<< K[0][i] <<" "<<
+    // std::real(gprod)<<" "<<std::imag(gprod)<< " "<<std::real(term)<<" "<<
+    // std::imag(term) <<" CO="<<output <<std::endl;
 
 
     output += term;
