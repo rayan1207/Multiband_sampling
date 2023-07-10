@@ -84,6 +84,7 @@ struct params_param {
 	int time;
 	double V;
 	double cutoff_value;
+	std::string graph;
 };
 
 

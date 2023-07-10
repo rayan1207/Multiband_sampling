@@ -15,7 +15,7 @@ rand_gen(0), rand_dist(0,1.0), engine(12)
 {
 	
  
-std::cout<<"AmiGraph Constructor Called"<<std::endl;
+//std::cout<<"AmiGraph Constructor Called"<<std::endl;
 
 initialize(AmiBase::Sigma);
 
@@ -29,7 +29,7 @@ rand_gen(seed), rand_dist(0,1.0), engine(12)
 	
 	
  
-std::cout<<"AmiGraph Constructor Called"<<std::endl;
+//std::cout<<"AmiGraph Constructor Called"<<std::endl;
 
 initialize(type);
     //auto roll_dice=std::bind ( rand_dist, rand_gen);
@@ -109,7 +109,7 @@ default: construct_starter_sigma(g);
 void AmiGraph::construct_starter_sigma(AmiGraph::graph_t &g){
 // Set vertices and edges for graph to be 2nd order self energy
 
-std::cout<<"Constructing Sigma Starter Graph"<< std::endl;
+//std::cout<<"Constructing Sigma Starter Graph"<< std::endl;
 // Create 6 vertices in that graph
 vertex_t in_vert = add_vertex(g);
 vertex_t out_vert = add_vertex(g);

@@ -649,7 +649,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	
         std::complex<double> raw_coeff = ami.evaluate(test_amiparms, R_array, P_array, S_array, external);
 		std::complex<double> result =form_factor* prefactor *raw_coeff;
-		if (abs(raw_coeff) > param.cutoff_value && ord==4) {
+	if ((abs(raw_coeff.real()) > param.cutoff_value || abs(raw_coeff.imag()) > param.cutoff_value) && ord==4) {
 			cutoff_num++;
        		
 		}
