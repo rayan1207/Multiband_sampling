@@ -6,7 +6,7 @@ int main(int argc, char** argv)
 auto   startTime = std::chrono::high_resolution_clock::now();
 AmiBase ami;
 mband::params_param params;
-params_loader("../loader/params.txt", params);
+params_loader("params.txt", params);
 int seed =3;
 AmiGraph g(AmiBase::Sigma, seed);
 AmiGraph::gg_matrix_t ggm;	
@@ -22,16 +22,16 @@ MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
 
 if (params.molecular==0&& params.lattice_type == 1){
-    interaction = readFile("../loader/Hubbard_U.txt");
-	interaction_value = readFile1("../loader/Hubbard_U.txt",5);
+    interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/Hubbard_U.txt");
+	interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/Hubbard_U.txt",5);
 	 band_energy = {0,0};
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;
-	std::string infile("../loader/ext_vars.dat");
+	std::string infile("ext_vars.dat");
 	std::cout<<"Reading external parameters from ext_vars.dat"<<std::endl;
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_all/",ggm, max);
+	g.read_ggmp("params.graph",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
@@ -46,17 +46,17 @@ for(int i=0; i<extern_list.size();i++){
 
 
 else if (params.molecular==0&& params.lattice_type ==2){
-     interaction = readFile("../loader/bilayer_interaction.txt");
-	 interaction_value = readFile1("../loader/bilayer_interaction.txt",5);
+     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/bilayer_interaction.txt");
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/bilayer_interaction.txt",5);
      band_energy = {0,0};
 
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;	
-	std::string infile("../loader/ext_vars.dat");
+	std::string infile("ext_vars.dat");
 	std::cout<<"Reading external parameters from ext_vars.dat"<<std::endl;
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_sigma_no_tp/",ggm, max);
+	g.read_ggmp("params.graph",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0);    
@@ -70,17 +70,17 @@ else if (params.molecular==0&& params.lattice_type ==2){
   }
   
   else if (params.molecular==0&& params.lattice_type ==3){
-    interaction = readFile("../loader/extended_U.txt");
-	interaction_value = readFile1("../loader/extended_U.txt",5);
+    interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/extended_U.txt");
+	interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/extended_U.txt",5);
     band_energy = {0,0};
 
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;	
-	std::string infile("../loader/ext_vars.dat");
+	std::string infile("ext_vars.dat");
 	std::cout<<"Reading external parameters from ext_vars.dat"<<std::endl;
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_test/",ggm, max);
+	g.read_ggmp("params.graph",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
@@ -95,31 +95,31 @@ else if (params.molecular==0&& params.lattice_type ==2){
   }
   
   else if (params.molecular==1&& params.molecular_type ==1){
-     interaction = readFile("../loader/h2sto_U.txt");
-	 interaction_value = readFile1("../loader/h2sto_U.txt",5);
-	 band_energy = readFile1("../loader/h2sto_e0.txt",2);
+     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/h2sto_U.txt");
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/h2sto_U.txt",5);
+	 band_energy = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/h2sto_e0.txt",2);
 
 	 
 
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;		
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_sigma_nofock_notp/",ggm, max);
+	g.read_ggmp("params.graph",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0);    
   }
   
     else if (params.molecular==1&& params.molecular_type ==2){
-     interaction = readFile("../loader/ccpdvz.txt");
-	 interaction_value = readFile1("../loader/ccpdvz.txt",5);
-	 band_energy = readFile1("../loader/ccpdvz_h.txt",2);
+     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/ccpdvz.txt");
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/ccpdvz.txt",5);
+	 band_energy = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/ccpdvz_h.txt",2);
 	
 
 	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_sigma_nofock_notp/",ggm, max);
+	g.read_ggmp("params.graph",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0);    
@@ -205,7 +205,6 @@ while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime)
                                                         extern_list[j], samplesPerProcess, params);
                         localSums[i][j][k] += std::get<0>(result);
                         localSumSquared[i][j][k] += std::get<1>(result);
-					    ///here my code is crashing
 						localSample[i][j][k] += std::get<2>(result);
 					
 						
@@ -240,14 +239,14 @@ double U = 1;
 
 std::ofstream outputFile;
 if (params.lattice_type==1){
-outputFile.open("../results/lattice/Hubbard/output.txt");
+outputFile.open("output_1.txt");
 }
 else if (params.lattice_type==2){
-outputFile.open("../results/lattice/Bilayer_Hubbard/output.txt");
+outputFile.open("output_2.txt");
 	
 }
 else if (params.lattice_type==3){
-outputFile.open("../results/lattice/extended/output.txt");
+outputFile.open("output_3.txt");
 	
 }	// Open the result file for writing
 
@@ -292,7 +291,7 @@ outputFile.open("../results/lattice/extended/output.txt");
 							std::cout << -1 << " ";
 							outputFile << -1 << " ";
 														}
-                    std::cout << i << " "<<globalSample[i][j][k];
+                    outputFile << i << " "<<globalSample[i][j][k];
                     std::cout << std::endl;
                     outputFile << std::endl;
                 }
@@ -382,10 +381,10 @@ std::vector<int> line = {params.in,params.out};
 					if (line[0]==-1 && line[1]==-1){
 					std::string filename;
 					if (params.molecular_type==1){
-                    filename = "../results/molecular/h2/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h2/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					else if (params.molecular_type==2){
-                    filename = "../results/molecular/h10/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h10/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					mb.molecular_solver(ggm[i][j].graph_vec[k], output_collector, Beta_ext_vec, Mfreq_ext_vec,filename);		
                     
@@ -393,10 +392,10 @@ std::vector<int> line = {params.in,params.out};
 					else{
 					std::string filename;
                     if (params.molecular_type==1){
-                    filename = "../results/molecular/h2/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h2/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					else if (params.molecular_type==2){
-                    filename = "../results/molecular/h10/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h10/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					mb.molecular_solver_ext(ggm[i][j].graph_vec[k], output_collector, Beta_ext_vec, Mfreq_ext_vec,line,filename);	
 					}
