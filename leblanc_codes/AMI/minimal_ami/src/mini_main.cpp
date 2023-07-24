@@ -80,7 +80,7 @@ else if (params.molecular==0&& params.lattice_type ==2){
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_test/",ggm, max);
+	g.read_ggmp("../graphs/ggm_sigma_no_tp/",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
@@ -153,8 +153,17 @@ for (int i = min_ord; i < max_ord+1; ++i) {
         for (int k = 0; k < ggm[i][j].graph_vec.size(); ++k) {
             mband::sampler_collector sigma_collector;
             mb.sigma_sampler(ggm[i][j].graph_vec[k], sigma_collector);
+			if (!sigma_collector.fermionic_edge_species.empty()){
+				if ( params.mfreq_indp == 0){
 			sigma_ToSum.push_back(sigma_collector);
 			sigma_FromGraph.push_back(ggm[i][j].graph_vec[k]);
+				}
+				else if (params.mfreq_indp == 1 && !mb.check_mfreq_independent(sigma_collector.Alpha))  {
+					sigma_ToSum.push_back(sigma_collector);
+					sigma_FromGraph.push_back(ggm[i][j].graph_vec[k]);
+				}
+				
+			}
 		}
 	}
 }
@@ -173,10 +182,18 @@ std::vector<std::vector<std::vector<int>>> localSample(sigma_ToSum.size(), std::
 std::vector<std::vector<std::vector<int>>> globalSample(sigma_ToSum.size(), std::vector<std::vector<int>>(extern_list.size()));
 
 
-auto startTime = std::chrono::high_resolution_clock::now();
-auto currentTime = startTime;
-MPI_Barrier(MPI_COMM_WORLD);
-while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime).count() < params.time) {
+std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
+std::chrono::time_point<std::chrono::high_resolution_clock> currentTime;
+
+if (rank == 0) {
+    startTime = std::chrono::high_resolution_clock::now();
+}
+
+// Broadcast start time from rank 0 to all other ranks
+MPI_Bcast(&startTime, sizeof(startTime), MPI_BYTE, 0, MPI_COMM_WORLD);
+
+
+while (std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count() < params.time) {
     for (int i = 0; i < sigma_ToSum.size(); i++) {
         for (int j = 0; j < extern_list.size(); j++) {
             int speciesSize = sigma_ToSum[i].fermionic_edge_species.size();
@@ -193,9 +210,7 @@ while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime)
                                                         extern_list[j], samplesPerProcess, params);
                         localSums[i][j][k] += std::get<0>(result);
                         localSumSquared[i][j][k] += std::get<1>(result);
-						localSample[i][j][k] += std::get<2>(result);
-              
-                
+						localSample[i][j][k] += std::get<2>(result);     
                 }
             } else {
                 for (int k = 0; k < speciesSize; k++) {
@@ -203,14 +218,11 @@ while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime)
                         std::tuple<std::complex<double>, std::complex<double>, int> result;
                         result = mb.lcalc_sampled_sigma(sigma_ToSum[i].graph, sigma_ToSum[i].Epsilon, sigma_ToSum[i].Alpha, sigma_ToSum[i].bosonic_Alpha, sigma_ToSum[i].Uindex[k], sigma_ToSum[i].fermionic_edge_species[k],
                                                         extern_list[j], samplesPerProcess, params);
+														
+												       
                         localSums[i][j][k] += std::get<0>(result);
                         localSumSquared[i][j][k] += std::get<1>(result);
-					    ///here my code is crashing
-						localSample[i][j][k] += std::get<2>(result);
-					
-						
-						
-						     
+						localSample[i][j][k] += std::get<2>(result);	     
                     }
                 }
             }
@@ -218,12 +230,23 @@ while (std::chrono::duration_cast<std::chrono::minutes>(currentTime - startTime)
             MPI_Reduce(localSums[i][j].data(), globalSums[i][j].data(), speciesSize * 2, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
             MPI_Reduce(localSumSquared[i][j].data(), globalSumSquared[i][j].data(), speciesSize * 2, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 			MPI_Reduce(localSample[i][j].data(), globalSample[i][j].data(), speciesSize, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+			MPI_Barrier(MPI_COMM_WORLD);
+
+
         }
     }
  
     totalSampleCount += samplesPerProcess;
+	MPI_Barrier(MPI_COMM_WORLD);
 
-    currentTime = std::chrono::high_resolution_clock::now();
+    if (rank == 0) {
+        currentTime = std::chrono::high_resolution_clock::now();
+    }
+
+    // Broadcast current time from rank 0 to all other ranks
+    MPI_Bcast(&currentTime, sizeof(currentTime), MPI_BYTE, 0, MPI_COMM_WORLD);
+	std::cout<< "Time elapsed for rank " << rank <<" is " <<  std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count()<<std::endl;
+   
 }
 
 // Compute the global totalSampleCount on rank 0

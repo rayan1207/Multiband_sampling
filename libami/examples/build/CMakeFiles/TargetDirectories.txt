@@ -1,3 +1,0 @@
-/mnt/c/Users/Rayan/Research/libami/examples/build/CMakeFiles/example.dir
-/mnt/c/Users/Rayan/Research/libami/examples/build/CMakeFiles/edit_cache.dir
-/mnt/c/Users/Rayan/Research/libami/examples/build/CMakeFiles/rebuild_cache.dir

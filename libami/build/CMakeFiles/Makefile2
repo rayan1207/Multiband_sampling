@@ -161,9 +161,9 @@ CMakeFiles/ami.dir/clean:
 # Target rules for target test/CMakeFiles/fb.dir
 
 # All Build rule for target.
+test/CMakeFiles/fb.dir/all: CMakeFiles/ami.dir/all
 test/CMakeFiles/fb.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 test/CMakeFiles/fb.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
-test/CMakeFiles/fb.dir/all: CMakeFiles/ami.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/fb.dir/build.make test/CMakeFiles/fb.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/fb.dir/build.make test/CMakeFiles/fb.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/c/Users/Rayan/Research/libami/build/CMakeFiles --progress-num=11,12 "Built target fb"
@@ -189,9 +189,9 @@ test/CMakeFiles/fb.dir/clean:
 # Target rules for target test/CMakeFiles/helper_functions.dir
 
 # All Build rule for target.
+test/CMakeFiles/helper_functions.dir/all: CMakeFiles/ami.dir/all
 test/CMakeFiles/helper_functions.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 test/CMakeFiles/helper_functions.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
-test/CMakeFiles/helper_functions.dir/all: CMakeFiles/ami.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/helper_functions.dir/build.make test/CMakeFiles/helper_functions.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/helper_functions.dir/build.make test/CMakeFiles/helper_functions.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/c/Users/Rayan/Research/libami/build/CMakeFiles --progress-num=17,18 "Built target helper_functions"
@@ -217,9 +217,9 @@ test/CMakeFiles/helper_functions.dir/clean:
 # Target rules for target test/CMakeFiles/num_test.dir
 
 # All Build rule for target.
+test/CMakeFiles/num_test.dir/all: CMakeFiles/ami.dir/all
 test/CMakeFiles/num_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 test/CMakeFiles/num_test.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
-test/CMakeFiles/num_test.dir/all: CMakeFiles/ami.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/num_test.dir/build.make test/CMakeFiles/num_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/num_test.dir/build.make test/CMakeFiles/num_test.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/c/Users/Rayan/Research/libami/build/CMakeFiles --progress-num=19,20 "Built target num_test"
@@ -245,9 +245,9 @@ test/CMakeFiles/num_test.dir/clean:
 # Target rules for target test/CMakeFiles/construct_tests.dir
 
 # All Build rule for target.
+test/CMakeFiles/construct_tests.dir/all: CMakeFiles/ami.dir/all
 test/CMakeFiles/construct_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
 test/CMakeFiles/construct_tests.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
-test/CMakeFiles/construct_tests.dir/all: CMakeFiles/ami.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/construct_tests.dir/build.make test/CMakeFiles/construct_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/construct_tests.dir/build.make test/CMakeFiles/construct_tests.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/c/Users/Rayan/Research/libami/build/CMakeFiles --progress-num=9,10 "Built target construct_tests"

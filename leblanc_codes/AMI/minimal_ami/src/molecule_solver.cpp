@@ -528,7 +528,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
     AmiBase::S_t S_array;
     AmiBase::P_t P_array;
     AmiBase::R_t R_array;
-
+    
     double E_REG = param.E_reg;
     int N_INT = ord;
     ami.precision_cutoff=param.set_precision;
@@ -546,6 +546,19 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
     int kspace = Alpha[0].size() - 1;
     std::complex<double> localSum(0.0, 0.0);
     std::complex<double> localSumOfSquares(0.0, 0.0);
+	
+	
+	// Storage Structures
+	AmiBase::g_prod_t unique;
+	AmiBase::R_ref_t rref;
+	AmiBase::ref_eval_t eval_list;
+
+	// Take existing solution from first part and factorize it 
+	ami.factorize_Rn(R_array.back(), unique, rref, eval_list);
+
+	
+	
+	
     // Generate random samples and calculate the sum
     for (int i = 0; i < MC_num; i++) {
         std::vector<std::vector<double>> momenta;
@@ -647,13 +660,20 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 
         AmiBase::ami_vars external(energy_t, frequency, ext_params.BETA_);
 	
-        std::complex<double> raw_coeff = ami.evaluate(test_amiparms, R_array, P_array, S_array, external);
+        std::complex<double> raw_coeff = ami.evaluate(test_amiparms, R_array, P_array, S_array, external,unique, rref, eval_list);
 		std::complex<double> result =form_factor* prefactor *raw_coeff;
-	if ((abs(raw_coeff.real()) > param.cutoff_value || abs(raw_coeff.imag()) > param.cutoff_value) && ord==4) {
-			cutoff_num++;
-       		
+	/*if ((abs(raw_coeff.real()) > param.cutoff_value || abs(raw_coeff.imag()) > param.cutoff_value) && ord==4) {
+			cutoff_num++;  	
+            std::cout<< "result cutoff detected" <<"result is"<< raw_coeff<<" with" <<param.cutoff_value  <<std::endl;			
 		}
-		else{
+	*/
+		
+	if (ami.overflow_detected) {
+			std::cout<<"over flow detected \n ";
+			std::cout<<"result is " <<raw_coeff<<std::endl;
+			cutoff_num++;     		
+		}
+	else{
         localSum +=  result;
         localSumOfSquares += std::complex<double> (std::pow(result.real(),2),std::pow(result.imag(),2)) ;
 		}

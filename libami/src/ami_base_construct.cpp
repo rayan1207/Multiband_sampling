@@ -10,7 +10,7 @@
  * @param[out] P_array : Resultant `P_t`.
  * @param[out] S_array : Resultant `S_t`.
  */
-AmiBase::construct(ami_parms &parms, g_prod_t R0, R_t &R_array,
+void AmiBase::construct(ami_parms &parms, g_prod_t R0, R_t &R_array,
                         P_t &P_array, S_t &S_array) {
   R_array.clear();
   P_array.clear();

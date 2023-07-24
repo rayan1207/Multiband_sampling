@@ -236,6 +236,15 @@ std::vector<int>  mband::interaction_index(const  std::vector<std::vector<int>>&
    
 }
 
+bool mband::check_mfreq_independent(const std::vector<AmiBase::alpha_t>& matrix) {
+    for (const auto& row : matrix) {
+        if (!row.empty() && row.back() != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
 std::vector<AmiBase::epsilon_t> mband::updateEpsilon(const std::vector<AmiBase::epsilon_t>& epsilon, const std::vector<double>& energy) {
     std::vector<std::vector<int>> updatedEpsilon = epsilon;
     std::vector<double> uniqueEnergies;
@@ -334,6 +343,8 @@ void params_loader(const std::string& filename, mband::params_param& params) {
 			params.V= std::stod(paramValue);
 		else if (paramName == "cutoff")
 			params.cutoff_value= std::stod(paramValue);
+		else if (paramName == "mfreq_indp")
+			params.mfreq_indp = std::stoi(paramValue);
 
 
 

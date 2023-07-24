@@ -1,0 +1,461 @@
+Edge (1,2) of stat_type 1 with loop id 1 with spin 0 with label 0 label=[ 1 0 0 ] and eps=[1 0 0 0 ]
+Edge (2,1) of stat_type 1 with loop id 1 with spin 0 with label 0 label=[ 1 0 -1 ] and eps=[0 0 1 0 ]
+Edge (2,3) of stat_type 0 with loop id -1 with spin 0 with label 0 label=[ 0 0 1 ] and eps=[0 0 0 0 ]
+Edge (3,4) of stat_type 1 with loop id 2 with spin 1 with label 0 label=[ 0 1 0 ] and eps=[0 1 0 0 ]
+Edge (4,3) of stat_type 1 with loop id 2 with spin 1 with label 0 label=[ 0 1 -1 ] and eps=[0 0 0 1 ]
+Edge (4,1) of stat_type 0 with loop id -1 with spin 0 with label 1 label=[ 0 0 1 ] and eps=[0 0 0 0 ]
+Loop count 2 and order 2
+Get prefactor is 1
+Printing S
+S[0]=({1 1 })
+S[1]=({1 1 }{1 1 })
+S[2]=({-1 -1 }{-1 1 }{1 -1 }{1 1 })
+
+P[0]=[Eps=(-1 0 0 0 )
+Alpha=(0 0 0 )
+Eps=(0 0 -1 0 )
+Alpha=(0 0 1 )
+]
+
+P[1]=[Eps=(0 -1 0 0 )
+Alpha=(0 0 0 )
+Eps=(0 0 0 -1 )
+Alpha=(0 0 1 )
+]
+[Eps=(0 -1 0 0 )
+Alpha=(0 0 0 )
+Eps=(0 0 0 -1 )
+Alpha=(0 0 1 )
+]
+
+P[2]=[Eps=(-1 0 1 0 )
+Alpha=(0 0 0 )
+Eps=(0 -1 0 1 )
+Alpha=(0 0 0 )
+]
+[Eps=(-1 0 1 0 )
+Alpha=(0 0 0 )
+Eps=(0 -1 0 1 )
+Alpha=(0 0 0 )
+]
+[Eps=(-1 0 1 0 )
+Alpha=(0 0 0 )
+Eps=(0 -1 0 1 )
+Alpha=(0 0 0 )
+]
+[Eps=(-1 0 1 0 )
+Alpha=(0 0 0 )
+Eps=(0 -1 0 1 )
+Alpha=(0 0 0 )
+]
+
+R[0]=----------Printing G_product----------
+----------Printing next----------
+Eps=(1 0 0 0 )
+Alpha=(1 0 0 )
+----------Printing next----------
+Eps=(0 0 1 0 )
+Alpha=(1 0 -1 )
+----------Printing next----------
+Eps=(0 1 0 0 )
+Alpha=(0 1 0 )
+----------Printing next----------
+Eps=(0 0 0 1 )
+Alpha=(0 1 -1 )
+R[1]=----------Printing G_product----------
+----------Printing next----------
+Eps=(-1 0 1 0 )
+Alpha=(0 0 -1 )
+----------Printing next----------
+Eps=(0 1 0 0 )
+Alpha=(0 1 0 )
+----------Printing next----------
+Eps=(0 0 0 1 )
+Alpha=(0 1 -1 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(1 0 -1 0 )
+Alpha=(0 0 1 )
+----------Printing next----------
+Eps=(0 1 0 0 )
+Alpha=(0 1 0 )
+----------Printing next----------
+Eps=(0 0 0 1 )
+Alpha=(0 1 -1 )
+R[2]=----------Printing G_product----------
+----------Printing next----------
+Eps=(-1 0 1 0 )
+Alpha=(0 0 -1 )
+----------Printing next----------
+Eps=(0 -1 0 1 )
+Alpha=(0 0 -1 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(-1 0 1 0 )
+Alpha=(0 0 -1 )
+----------Printing next----------
+Eps=(0 1 0 -1 )
+Alpha=(0 0 1 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(1 0 -1 0 )
+Alpha=(0 0 1 )
+----------Printing next----------
+Eps=(0 -1 0 1 )
+Alpha=(0 0 -1 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(1 0 -1 0 )
+Alpha=(0 0 1 )
+----------Printing next----------
+Eps=(0 1 0 -1 )
+Alpha=(0 0 1 )
+R[3]=----------Printing G_product----------
+----------Printing next----------
+Eps=(1 -1 -1 1 )
+Alpha=(0 0 0 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(-1 1 1 -1 )
+Alpha=(0 0 0 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(-1 1 1 -1 )
+Alpha=(0 0 0 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(-1 1 1 -1 )
+Alpha=(0 0 0 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(1 -1 -1 1 )
+Alpha=(0 0 0 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(1 -1 -1 1 )
+Alpha=(0 0 0 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(-1 1 1 -1 )
+Alpha=(0 0 0 )
+----------Printing G_product----------
+----------Printing next----------
+Eps=(1 -1 -1 1 )
+Alpha=(0 0 0 )
+Converting to ggamim
+Done
+Reading external parameters from ext_vars.dat
+Segmentation fault (core dumped)
+jpfleblanc@DESKTOP-494C65E:/mnt/c/Users/jpfle/Desktop/working/leblanc_codes/AMI/libamigraph/build$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

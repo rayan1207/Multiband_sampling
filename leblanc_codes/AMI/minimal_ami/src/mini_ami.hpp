@@ -1,7 +1,5 @@
 #ifndef MINI_AMI_HPP
 #define MINI_AMI_HPP
-
-
 #include "ami_base.hpp"
 #include "ami_calc.hpp"
 #include "amigraph.hpp"
@@ -34,7 +32,6 @@
 class mband{
 private:
 
- 
  
 public: 
 std::vector<vector<int>> interaction_legs; //= {{1,1,1,1},{2,2,1,1},{2,1,2,1},{1,2,2,1},{2,1,1,2},{1,2,1,2},
@@ -83,8 +80,9 @@ struct params_param {
 	int molec_mfreq;
 	int time;
 	double V;
-	double cutoff_value;
 	std::string graph;
+	double cutoff_value=1e8;
+	int mfreq_indp = 0;
 };
 
 
@@ -139,6 +137,8 @@ double Umatch(const std::vector<std::vector<int>>& int_matrix, const std::vector
 
 std::vector<int> Hartee_fock_filter(AmiGraph::edge_vector_t &fermionic_edge);
 void filter(std::vector<std::vector<int>>& possible_species, const std::vector<int>& list);
+
+bool check_mfreq_independent(const std::vector<AmiBase::alpha_t>& matrix);
 
 //////////////////////////////////lattice_stuff///////////////////////////
 

@@ -15,7 +15,7 @@
 ########################
 
 //No help, variable specified on the command line.
-BOOST_MP:UNINITIALIZED=OFF
+BOOST_MP:UNINITIALIZED=ON
 
 //No help, variable specified on the command line.
 BUILD_DOC:UNINITIALIZED=OFF
@@ -26,10 +26,10 @@ BUILD_GMOCK:BOOL=OFF
 BUILD_GTEST:BOOL=ON
 
 //The directory containing a CMake configuration file for Boost.
-Boost_DIR:PATH=Boost_DIR-NOTFOUND
+Boost_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0
 
 //Path to a file.
-Boost_INCLUDE_DIR:PATH=Boost_INCLUDE_DIR-NOTFOUND
+Boost_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
@@ -69,9 +69,6 @@ CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 
 //Flags used by the CXX compiler during RELWITHDEBINFO builds.
 CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
-
-//C++ version selection
-CMAKE_CXX_STANDARD:STRING=14
 
 //C compiler
 CMAKE_C_COMPILER:FILEPATH=/usr/bin/mpicc
@@ -157,7 +154,7 @@ CMAKE_INSTALL_MANDIR:PATH=
 CMAKE_INSTALL_OLDINCLUDEDIR:PATH=/usr/include
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=//mnt/c/Users/Rayan/Research/libami/install
+CMAKE_INSTALL_PREFIX:PATH=/mnt/c/Users/Rayan/Research/libami/install
 
 //Run-time variable data (LOCALSTATEDIR/run)
 CMAKE_INSTALL_RUNSTATEDIR:PATH=
@@ -319,9 +316,6 @@ GIT_EXECUTABLE:FILEPATH=/usr/bin/git
 // may want to turn this OFF.)
 INSTALL_GTEST:BOOL=ON
 
-//No help, variable specified on the command line.
-MAKE_PYAMI:UNINITIALIZED=OFF
-
 //Python version to use for compiling modules
 PYBIND11_PYTHON_VERSION:STRING=
 
@@ -330,9 +324,6 @@ PYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3.10
 
 //Path to a library.
 PYTHON_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libpython3.10.so
-
-//No help, variable specified on the command line.
-PYTHON_LIBRARY_DIR:UNINITIALIZED=/mnt/c/Users/Rayan/Research/libami/install
 
 //No help, variable specified on the command line.
 TEST:UNINITIALIZED=ON
@@ -345,6 +336,9 @@ ami_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 ami_SOURCE_DIR:STATIC=/mnt/c/Users/Rayan/Research/libami
+
+//The directory containing a CMake configuration file for boost_headers.
+boost_headers_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.74.0
 
 //Value Computed by CMake
 googletest-distribution_BINARY_DIR:STATIC=/mnt/c/Users/Rayan/Research/libami/build/_deps/googletest-build
@@ -392,15 +386,6 @@ gtest_hide_internal_symbols:BOOL=OFF
 //Dependencies for the target
 gtest_main_LIB_DEPENDS:STATIC=general;gtest;
 
-//Value Computed by CMake
-pyami_BINARY_DIR:STATIC=/mnt/c/Users/Rayan/Research/libami/build
-
-//Value Computed by CMake
-pyami_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-pyami_SOURCE_DIR:STATIC=/mnt/c/Users/Rayan/Research/libami
-
 //The directory containing a CMake configuration file for pybind11.
 pybind11_DIR:PATH=/usr/lib/cmake/pybind11
 
@@ -411,8 +396,6 @@ pybind11_DIR:PATH=/usr/lib/cmake/pybind11
 
 //ADVANCED property for variable: Boost_DIR
 Boost_DIR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: Boost_INCLUDE_DIR
-Boost_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_ADDR2LINE
 CMAKE_ADDR2LINE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR
@@ -592,6 +575,8 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding Boost
+FIND_PACKAGE_MESSAGE_DETAILS_Boost:INTERNAL=[/usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake][c ][v1.74.0(1.71.0)]
 //Details about finding PYTHON
 FIND_PACKAGE_MESSAGE_DETAILS_PYTHON:INTERNAL=/usr/bin/python3.103.10.6
 //Details about finding PythonInterp
@@ -615,17 +600,11 @@ PYTHON_VERSION:INTERNAL=3.10.6
 PYTHON_VERSION_MAJOR:INTERNAL=3
 PYTHON_VERSION_MINOR:INTERNAL=10
 Python_ADDITIONAL_VERSIONS:INTERNAL=3.11;3.10;3.9;3.8;3.7;3.6;3.5;3.4
-//Components requested for this build tree.
-_Boost_COMPONENTS_SEARCHED:INTERNAL=
-//Last used Boost_INCLUDE_DIR value.
-_Boost_INCLUDE_DIR_LAST:INTERNAL=Boost_INCLUDE_DIR-NOTFOUND
-//Last used Boost_NAMESPACE value.
-_Boost_NAMESPACE_LAST:INTERNAL=boost
-//Last used Boost_USE_MULTITHREADED value.
-_Boost_USE_MULTITHREADED_LAST:INTERNAL=TRUE
 //CMAKE_INSTALL_PREFIX during last run
-_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=//mnt/c/Users/Rayan/Research/libami/install
+_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/mnt/c/Users/Rayan/Research/libami/install
 _Python:INTERNAL=PYTHON
+//ADVANCED property for variable: boost_headers_DIR
+boost_headers_DIR-ADVANCED:INTERNAL=1
 generated_dir:INTERNAL=/mnt/c/Users/Rayan/Research/libami/build/_deps/googletest-build/googletest/generated
 //ADVANCED property for variable: gtest_build_samples
 gtest_build_samples-ADVANCED:INTERNAL=1

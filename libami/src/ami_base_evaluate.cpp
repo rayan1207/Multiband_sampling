@@ -75,7 +75,6 @@ std::complex<double> AmiBase::optimized_star(ami_parms &parms, SorF_t K,
   std::complex<boost::multiprecision::float128> gprod;
   std::complex<boost::multiprecision::float128> output(0, 0);
   boost::multiprecision::float128 prefactor = external.prefactor;
-  
   std::vector<std::complex<boost::multiprecision::float128>> unique_vals;
 #else
   std::complex<double> term;
@@ -149,7 +148,7 @@ std::complex<double> AmiBase::optimized_star(ami_parms &parms, SorF_t K,
 #ifdef BOOST_MP
     std::complex<boost::multiprecision::float128> this_gprod(1, 0);
     for (int j = 0; j < pair_vec.size(); j++) {
-      
+      //std::cout<< " boost is working 1" <<std::endl;
       std::complex<boost::multiprecision::float128> this_val =
           unique_vals[pair_vec[j].first];
       this_gprod = this_gprod * this_val;
@@ -319,12 +318,12 @@ std::complex<double> AmiBase::star(ami_parms &parms, SorF_t K, Ri_t R,
     }
 
 	// These are necessary debugging lines that should stay 
-     //std::cout<<"In star K[]*R"<<std::endl;
-     if(std::abs( std::real(term))>1000){
-     print_output=true;
-     std::cout<< std::setprecision(20)<< i<<" "<< K[0][i] <<" "<<
-     std::real(gprod)<<" "<<std::imag(gprod)<< " "<<std::real(term)<<" "<<
-     std::imag(term) <<" CO="<<output <<std::endl;}
+    // std::cout<<"In star K[]*R"<<std::endl;
+    // if(std::abs( std::real(term))>1000){
+    // print_output=true;
+    // std::cout<< std::setprecision(20)<< i<<" "<< K[0][i] <<" "<<
+    // std::real(gprod)<<" "<<std::imag(gprod)<< " "<<std::real(term)<<" "<<
+    // std::imag(term) <<" CO="<<output <<std::endl;
 
 
     output += term;

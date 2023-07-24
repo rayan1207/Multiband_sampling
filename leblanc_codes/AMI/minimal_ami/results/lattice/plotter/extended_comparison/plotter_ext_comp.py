@@ -108,10 +108,55 @@ plt.savefig('extended_self_b4_o3.pdf', dpi=2400, bbox_inches='tight')
 plt.show()
 
 
-o4 = np.loadtxt('sigma_U4_o4_v0.dat')
 
-plt.subplot(1,2,1)
-plt.plot(o4[:,0]+2)
-plt.subplot(1,2,2)
-plt.plot(o4[:,2])
+o4_U2_v0 = np.loadtxt('filtered_v0_U2.txt')
+o4_U4_v0 = np.loadtxt('filtered_v0_U4.txt')
+
+o4_U2_v05 = np.loadtxt('filtered_v4_U2.txt')
+o4_U4_v10 = np.loadtxt('filtered_v4_U4.txt')
+
+
+o4_U2_v025 = np.loadtxt('filtered_v8_U2.txt')
+o4_U4_v05 = np.loadtxt('filtered_v8_U4.txt')
+
+x = range(len(o4_U2_v025[:,0]))
+plt.figure(figsize=[10,8])
+plt.suptitle('truncated at order 4, beta=4')
+plt.subplot(2,2,1)
+plt.errorbar(x,o4_U2_v0[:,0],yerr=o4_U2_v0[:,1],fmt='x-',label='U=2,V=0')
+plt.errorbar(x,o4_U2_v025[:,0],yerr=o4_U2_v025[:,1],fmt='.-',label='U=2,V=0.25')
+plt.errorbar(x,o4_U2_v05[:,0],yerr=o4_U2_v05[:,1],fmt='o-',label='U=2,V=0.50')
+plt.ylabel(r'Re $\Sigma$',**axis_font)
+plt.xticks([0, 4, 8, 12], ['$[0,0]$',
+                            '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
+plt.legend()
+plt.subplot(2,2,2)
+plt.errorbar(x,o4_U4_v0[:,0],yerr=o4_U4_v0[:,1],fmt='x-',label='U=4,V=0')
+plt.errorbar(x,o4_U4_v05[:,0],yerr=o4_U4_v05[:,1],fmt='.-',label='U=4,V=0.50')
+# plt.errorbar(x,o4_U4_v10[:,0],yerr=o4_U4_v10[:,1],fmt='o-',label='U=4,V=1.0')
+plt.xticks([0, 4, 8, 12], ['$[0,0]$',
+                            '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
+plt.legend()
+plt.subplot(2,2,3)
+plt.errorbar(x,o4_U2_v0[:,2],yerr=o4_U2_v0[:,3],fmt='x-',label='U=2,V=0')
+plt.errorbar(x,o4_U2_v025[:,2],yerr=o4_U2_v025[:,3],fmt='.-',label='U=2,V=0.25')
+plt.errorbar(x,o4_U2_v05[:,2],yerr=o4_U2_v05[:,3],fmt='o-',label='U=2,V=0.50')
+plt.xticks([0, 4, 8, 12], ['$[0,0]$',
+                            '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
+plt.ylabel(r'Imag $\Sigma$',**axis_font)
+plt.subplot(2,2,4)
+plt.errorbar(x,o4_U4_v0[:,2],yerr=o4_U4_v0[:,3],fmt='x-',label='U=4,V=0')
+plt.errorbar(x,o4_U4_v05[:,2],yerr=o4_U4_v05[:,3],fmt='.-',label='U=4,V=0.50')
+# plt.errorbar(x,o4_U4_v10[:,2],yerr=o4_U4_v10[:,3],fmt='o-',label='U=4,V=1.0')
+plt.xticks([0, 4, 8, 12], ['$[0,0]$',
+                            '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
+plt.savefig('extended_self_b4_o4.pdf', dpi=2400, bbox_inches='tight')
 plt.show()
+
+# o4 = np.loadtxt('sigma_U4_o4_v0.dat')
+
+# plt.subplot(1,2,1)
+# plt.plot(o4[:,0]+2)
+# plt.subplot(1,2,2)
+# plt.plot(o4[:,2])
+# plt.show()

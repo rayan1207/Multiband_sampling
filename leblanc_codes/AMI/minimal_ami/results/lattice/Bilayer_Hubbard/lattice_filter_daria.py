@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-file_path = "output.txt"
+file_path = "mfreq/o4_33_tperp03.txt"
 # data = np.loadtxt(file_path)
 U = 3
 V = 0
@@ -46,21 +46,31 @@ for i in range(4):
 #print(df)
 
 # Group by the first 10 columns and sum the values in columns 9 and 10
-
+# df =df[(df[0] == 4)]
 grouped_df = df.groupby(df.columns[1:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
 grouped_df_ord = df.groupby(df.columns[:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
 
-filtered_df = grouped_df[(grouped_df[8] == 1) & (grouped_df[9] == 1)]
+filtered_df = grouped_df[(grouped_df[8] == 3) & (grouped_df[9] == 3)]
 
 filtered_df = symmetrize(filtered_df)
 print(filtered_df)
 
-filtered_df.to_csv('filtered_output.txt', sep=' ', header=False, index=False, float_format='%.7f')
-
+# filtered_df.to_csv('filtered_output.txt', sep=' ', header=False, index=False, float_format='%.7f')
+data= filtered_df.to_numpy()
+# result = np.column_stack((np.asarray(data[:,9]), np.asarray(data[:,10])/1.5,np.asarray(data[:,11]), np.asarray(data[:,12])/1.5))
+# np.savetxt('kcut_plot/o4_33_tp03_U3V15.txt',result)
 
 
 data= filtered_df.to_numpy()
-plt.plot(data[:,9],'x-')
+
+plt.subplot(1,2,1)
+plt.errorbar(range(len(data[:,5])), data[:,9],yerr=data[:,10]/1.5,fmt='x-')
+# plt.xticks([0, 8, 16, 24], ['$[0,0]$',
+#                             '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
+plt.subplot(1,2,2)
+plt.errorbar(range(len(data[:,5])),data[:,11],yerr=data[:,12]/1.5,fmt='x-')
+# plt.xticks([0, 8, 16, 24], ['$[0,0]$',
+#                             '$[\pi,0]$', '$[\pi,\pi]$', '$[0,0]$'])
 plt.show()
 
 

@@ -24,12 +24,12 @@ AmiBase::g_prod_t g;
 
 AmiBase::alpha_t alpha_1={1,0,0};
 AmiBase::alpha_t alpha_2={0,1,0};
-AmiBase::alpha_t alpha_3={1,0,0};
-//AmiBase::alpha_t alpha_3={-1,1,1};
+AmiBase::alpha_t alpha_3={-1,1,1};
+
 //defining epsilon's
-AmiBase::epsilon_t epsilon_1={0,1,0};
-AmiBase::epsilon_t epsilon_2={0,0,1};
-AmiBase::epsilon_t epsilon_3={0,1,0};
+AmiBase::epsilon_t epsilon_1={1,0,0};
+AmiBase::epsilon_t epsilon_2={0,1,0};
+AmiBase::epsilon_t epsilon_3={0,0,1};
 
 AmiBase::g_struct g1(epsilon_1,alpha_1);
 AmiBase::g_struct g2(epsilon_2,alpha_2);
@@ -52,17 +52,16 @@ return R0;
 
 AmiBase::ami_vars construct_ext_example2(){
 
-double E1 =-0.582;
-double E2 = 0.667;
-//AmiBase::energy_t energy={0.1,0.3,0.2};
-AmiBase::energy_t energy={4,E1+1e-8,E1};
+
+AmiBase::energy_t energy={-4,0.1,-1};
+
 AmiBase::frequency_t frequency;
-double BETA=50;
+
 for(int i=0;i<2;i++){ frequency.push_back(std::complex<double>(0,0));}
 
-frequency.push_back(std::complex<double>(0,M_PI));
+frequency.push_back(std::complex<double>(0,M_PI/5));
 
-
+double BETA=5.0;
 AmiBase::ami_vars external(energy, frequency,BETA);
 
 return external;
@@ -619,14 +618,17 @@ AmiBase::g_prod_t g;
 // defining alpha's /// std::vector<int>
 
 
-AmiBase::alpha_t alpha_1={1,0,0};
-AmiBase::alpha_t alpha_2={0,1,0};
-AmiBase::alpha_t alpha_3={-1,1,1};
+AmiBase::alpha_t alpha_1={1,1,-1};
+// AmiBase::alpha_t alpha_1={-1,1,1};
+AmiBase::alpha_t alpha_2={1,0,0};
+AmiBase::alpha_t alpha_3={0,1,0};
 
 //defining epsilon's
 AmiBase::epsilon_t epsilon_1={1,0,0};
-AmiBase::epsilon_t epsilon_2={0,1,0};
-AmiBase::epsilon_t epsilon_3={0,0,1};
+AmiBase::epsilon_t epsilon_2={1,0,0};
+AmiBase::epsilon_t epsilon_3={1,0,0};
+// AmiBase::epsilon_t epsilon_2={0,1,0};
+// AmiBase::epsilon_t epsilon_3={0,0,1};
 
 AmiBase::g_struct g1(epsilon_1,alpha_1);
 AmiBase::g_struct g2(epsilon_2,alpha_2);
@@ -650,7 +652,7 @@ return R0;
 AmiBase::ami_vars construct_ext_example2_safe(){
 
 
-AmiBase::energy_t energy={1.000,-1.00,-1.00};
+AmiBase::energy_t energy={0.001,0.001,0.001};//{-2.22045e-16,-0,-2.22045e-16};
 
 AmiBase::frequency_t frequency;
 
@@ -673,7 +675,7 @@ AmiBase::g_prod_t g;
 // defining alpha's /// std::vector<int>
 
 
-AmiBase::alpha_t alpha_1={1,-1,1,0};
+AmiBase::alpha_t alpha_1={1,0,1,-1};
 AmiBase::alpha_t alpha_2={1,-1,1,0};
 AmiBase::alpha_t alpha_3={1,0,0,0};
 AmiBase::alpha_t alpha_4={0,1,0,0};
@@ -712,7 +714,7 @@ return R0;
 AmiBase::ami_vars construct_ext_example3_safe(){
 
 
-AmiBase::energy_t energy={-4,-4,-4,-0,-0};//{-0.585786,-0.585786,-4,-0.585786,2.82843};//{-2,-2,-4,-4,-2};//{-2,-2,-3.41421,-2.82843,-1.41421};
+AmiBase::energy_t energy={-0,2,-3.41421,-2,3.41421};//{-4,-4,-4,-0,-0};//{-0.585786,-0.585786,-4,-0.585786,2.82843};//{-2,-2,-4,-4,-2};//{-2,-2,-3.41421,-2.82843,-1.41421};
 
 AmiBase::frequency_t frequency;
 

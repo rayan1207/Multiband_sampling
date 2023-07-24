@@ -1,30 +1,5 @@
 
 #include "examples.hpp"
-void changeEqualNumbers(std::vector<double>& vec) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> dist(-1, 1);
-    // Iterate over the vector
-    for (int i = 0; i < vec.size(); i++) {
-        // Check if the current element is equal to the next element
-        if (i + 1 < vec.size() && vec[i] == vec[i + 1]) {
-            // Find the end of the group of equal numbers
-            int j = i + 1;
-            while (j < vec.size() && vec[j] == vec[i]) {
-                j++;
-            }
-            j--;
-
-            // Reduce the values of the group by 0.1
-            for (int k = i; k <= j; k++) {
-                vec[k] = vec[k]+ dist(gen)*1e-6/2;
-            }
-
-            // Move to the next element after the group
-            i = j;
-        }
-    }
-}
 
 
 
@@ -33,15 +8,9 @@ int main(int argc, char** argv)
 	
 
 example2();
-// example1_bose();
-// example4();
-// example9();
-double E1 =0.582440;
-double E2 = -0.667440;
-//AmiBase::energy_t energy={0.1,0.3,0.2};
-std::vector<double> e={E1,E1,E1};
-changeEqualNumbers(e);
-for (auto i : e){ std::cout <<i <<" ";}
+example1_bose();
+example4();
+example9();
 
 		
 // safe_example();	
@@ -61,6 +30,9 @@ AmiBase ami;
 AmiBase::g_prod_t R0=construct_example3_safe(); // Sets initial integrand 
 AmiBase::ami_vars avars=construct_ext_example3_safe(); // Sets 'external' parameter values 
 
+
+
+
 	//timing info
 	auto t1=std::chrono::high_resolution_clock::now();
 
@@ -70,13 +42,20 @@ AmiBase::P_t P_array;
 AmiBase::R_t R_array;
 
 // Integration/Evaluation parameters
-double E_REG=0; // Numerical regulator for small energies.  If inf/nan results try E_REG=1e-8 
+double E_REG=0;//1e-8;//0; // Numerical regulator for small energies.  If inf/nan results try E_REG=1e-8 
 int N_INT=3;  // Number of Matsubara sums to perform
 AmiBase::ami_parms test_amiparms(N_INT, E_REG);
 
+ami.drop_matsubara_poles=1;
+ami.verbose=0;
+// ami.drop_bosonic_diverge=1;
+// ami.E_REG=1e-8;
+std::cout<<"Drop matsubara is set to "<<ami.drop_matsubara_poles<<std::endl;
+
 //Construction Stage
-ami.drop_matsubara_poles = true;
 ami.construct(test_amiparms, R0, R_array, P_array, S_array);  // Populates S,P,R with solution 
+
+// ami.print_final(2, R_array, P_array, S_array);
 
 	//timing info 
 	auto t2=std::chrono::high_resolution_clock::now();
@@ -139,19 +118,18 @@ AmiBase::P_t P_array;
 AmiBase::R_t R_array;
 
 // Integration/Evaluation parameters
-double E_REG=1e-8; // Numerical regulator for small energies.  If inf/nan results try E_REG=1e-8 
+double E_REG=0; // Numerical regulator for small energies.  If inf/nan results try E_REG=1e-8 
 int N_INT=2;  // Number of Matsubara sums to perform
 AmiBase::ami_parms test_amiparms(N_INT, E_REG);
 
 //Construction Stage
-ami.drop_matsubara_poles= true;
 ami.construct(test_amiparms, R0, R_array, P_array, S_array);  // Populates S,P,R with solution 
 
 	//timing info 
 	auto t2=std::chrono::high_resolution_clock::now();
 
 // Evaluate the result
-std::complex<double> calc_result=ami.evaluate_otf(test_amiparms,R_array, P_array, S_array,  avars);	// Evaluate integrand for parameters in 'avars'
+std::complex<double> calc_result=ami.evaluate(test_amiparms,R_array, P_array, S_array,  avars);	// Evaluate integrand for parameters in 'avars'
 	
 	//timing info
 	auto t_end=std::chrono::high_resolution_clock::now();
