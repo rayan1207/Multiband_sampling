@@ -105,8 +105,7 @@ vector<int> mband::generate_edge_species(AmiGraph::graph_t &g, AmiGraph::edge_ve
 	for (int i =0; i< edge.size(); i++){
 	
 	
-	vector.push_back(g[edge[i]].g_struct_.species_) ;
-
+	vector.push_back(g[edge[i]].g_struct_.species_);
 }
 
 
@@ -356,7 +355,7 @@ void mband::solve_multiband_2(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &
 	else{
 		possible_species_1 = mband::interaction_legs;
 	}
-	//std::cout<< " Possible external species in curly bracket and internal species in () is shown below \n";
+	std::cout<< " Possible external species in curly bracket and internal species in () is shown below \n";
 	if (!possible_species_1.empty()) {
 		for (int i = 0; i<possible_species_1.size();i++){
 
@@ -375,14 +374,14 @@ void mband::solve_multiband_2(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &
 				
 				std::cout<< fermionic_edge.size();
 				std::vector<int> v;
-				//std::cout<<"(";
+				std::cout<<"(";
 				for (int x =0; x < fermionic_edge.size(); x++){
 					v.push_back(graph[fermionic_edge[x]].g_struct_.species_);
-					//std::cout<<graph[fermionic_edge[x]].g_struct_.species_;				
+					std::cout<<graph[fermionic_edge[x]].g_struct_.species_;				
 				}
 				fermionic_species.push_back(v);
 				v.clear();
-				//std::cout<<")"<<std::endl;			    
+				std::cout<<")"<<std::endl;			    
 				}
 				mband::assign_label(graph,int_vector[1],initial_species_2);
 				

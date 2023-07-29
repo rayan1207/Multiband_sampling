@@ -18,7 +18,6 @@
 #include <chrono>
 #include <thread>
 #include <sstream>
-
 #include <boost/random/sobol.hpp>
 #include <boost/random/uniform_01.hpp>
 #include <boost/random/variate_generator.hpp>
@@ -31,8 +30,7 @@
 
 class mband{
 private:
-
- 
+  
 public: 
 std::vector<vector<int>> interaction_legs; //= {{1,1,1,1},{2,2,1,1},{2,1,2,1},{1,2,2,1},{2,1,1,2},{1,2,1,2},
 //{1,1,2,2},{2,2,2,2}};
@@ -51,6 +49,7 @@ struct sampler_collector {
 	std::vector<AmiBase::epsilon_t> Epsilon;
 	std::vector<AmiBase::alpha_t> Alpha;
 	std::vector<AmiBase::alpha_t> bosonic_Alpha;
+	std::vector<AmiBase::alpha_t> gkkp_Alpha;
 	std::vector<std::vector<int>>  Uindex;
 	
 };
@@ -62,6 +61,7 @@ struct output_collector {
     std::vector<std::vector<int>> Uindex_vec;
 };
 struct params_param {
+	int  graph_type;
 	int  min_ord;		
 	int  max_ord;
     int molecular;
@@ -83,6 +83,7 @@ struct params_param {
 	std::string graph;
 	double cutoff_value=1e8;
 	int mfreq_indp = 0;
+	int G_FUNC=0;
 };
 
 
@@ -145,6 +146,24 @@ bool check_mfreq_independent(const std::vector<AmiBase::alpha_t>& matrix);
 double Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,params_param param);
 //std::complex<double> lcalc_sampled_sigma(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha, std::vector<int>& Species,
 //    NewAmiCalc::ext_vars& ext_params, int MC_num, int lattice_type);
+
+///////new pp functions//////////////////////
+void find_four_pp_lines(AmiGraph::graph_t &graph, AmiGraph::edge_vector_t &outgoing_fedge,AmiGraph::edge_vector_t &incoming_fedge);
+AmiGraph::vertex_t find_next_ppv_outedge(AmiGraph::vertex_t &start, AmiGraph::graph_t &graph);
+void find_connected_pp_edge(AmiGraph::graph_t &graph, AmiGraph::edge_vector_t &pair1, AmiGraph::edge_vector_t &pair2);
+void assign_bandindex_fourline_pp(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &pair1,AmiGraph::edge_vector_t &pair2, std::vector<int> &bandindex);
+void solve_pp_ord1(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex);
+void solve_pp_ord2(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex);
+void solve_pp_ord3(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex);
+void solve_pp_ord4(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex);
+void solve_pp_ord(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex);
+void pp_sampler( AmiGraph::graph_t &graph, mband::sampler_collector& collector,std::vector<int> &bandindex);
+double gfunc_pp(std::vector<double> momenta, params_param &param);
+
+std::tuple<std::complex<double>, std::complex<double>, int> lcalc_sampled_pp(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &Utype,
+ std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param);
+
+ 
 };
 /// A few simple functions
 template<typename T>
