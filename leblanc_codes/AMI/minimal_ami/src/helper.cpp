@@ -236,6 +236,39 @@ std::vector<int>  mband::interaction_index(const  std::vector<std::vector<int>>&
    
 }
 
+
+double mband::gfunc_pp(std::vector<double> momenta, params_param &param){
+	if (param.G_FUNC == 0){
+		
+		return 1;
+		
+	}
+	else if (param.G_FUNC == 1){	
+		return std::cos(momenta[0]) + std::cos(momenta[1]);	
+	}
+	else if (param.G_FUNC == 2){	
+		return std::sin(momenta[0])* std::sin(momenta[1]);	
+	}
+	else if (param.G_FUNC == 3){	
+		return std::cos(momenta[0])- std::cos(momenta[1]);	
+	}
+	else{
+		std::cerr <<" Invalid G_FUNC values"<<std::endl;
+		return 1;
+		
+	}
+	
+}
+
+bool mband::check_mfreq_independent(const std::vector<AmiBase::alpha_t>& matrix) {
+    for (const auto& row : matrix) {
+        if (!row.empty() && row.back() != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
 std::vector<AmiBase::epsilon_t> mband::updateEpsilon(const std::vector<AmiBase::epsilon_t>& epsilon, const std::vector<double>& energy) {
     std::vector<std::vector<int>> updatedEpsilon = epsilon;
     std::vector<double> uniqueEnergies;
@@ -334,8 +367,15 @@ void params_loader(const std::string& filename, mband::params_param& params) {
 			params.V= std::stod(paramValue);
 		else if (paramName == "cutoff")
 			params.cutoff_value= std::stod(paramValue);
+		else if (paramName == "mfreq_indp")
+			params.mfreq_indp = std::stoi(paramValue);
+		else if (paramName == "graph_type")
+			params.graph_type = std::stoi(paramValue);
 		else if (paramName == "graph")
-        params.graph = paramValue;
+                        params.graph = paramValue;
+		else if (paramName == "G_FUNC")
+			params.G_FUNC= std::stoi(paramValue);
+		
 
 
 
