@@ -551,9 +551,14 @@ void mband::pp_sampler( AmiGraph::graph_t &graph, mband::sampler_collector& coll
 	for (auto interac: collector.interaction_species){
 	collector.Uindex.push_back(interaction_index(interac));
 	}
-std::cout << "gkkp alphas to be used are \n";
-	print2d(collector.gkkp_Alpha);
+    std::vector<std::vector<int>> ext;
+	for (int i =0; i <collector.fermionic_edge_species.size();i++){	
+		ext.push_back(bandindex);
+	}
 	
+	std::cout << "gkkp_alpha are" <<std::endl;
+	print2d(collector.gkkp_Alpha);
+	collector.external_line=ext;	
 }
 
 
@@ -563,21 +568,23 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	int cutoff_num = 0;
     AmiBase ami;
     int ord = gp.graph_order(gself);
-    double prefactor = gp.get_prefactor(gself, ord);
+	int loop = gp.count_fermi_loops(gself);
+	
+	double power= (double) (ord+loop);
+    double prefactor = std::pow(-1,power);
+	double prefactor1 = gp.get_prefactor(gself,ord);
+	std::cout << "1prefactor used is" << prefactor << "with loop "<< loop<<"ord is "<< ord<<"bubble no is " <<gp.count_bubbles(gself) <<std::endl;
+	std::cout << "2prefactor used is" << prefactor1 <<std::endl; 
+	
     int n = 2 * ord +2; // number of fermionic lines
     AmiBase::g_struct gs[n];
     std::vector<AmiBase::g_struct> gs_vec;
+	
+
     for (int i = 0; i < n; i++) {
         gs[i] = {Epsilon[i], Alpha[i]};
         gs_vec.push_back(gs[i]);
     }
-	/*
-	std::cout<<"epsilon are \n";
-	print2d(Epsilon);
-	
-	std::cout<<"alpha are \n";
-	print2d(Alpha);
-	*/
 
     AmiBase::g_prod_t R0 = gs_vec;
     AmiBase::S_t S_array;
@@ -587,10 +594,12 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
     double E_REG = param.E_reg;
     int N_INT = ord+1;
     ami.precision_cutoff=param.set_precision;
-    AmiBase::ami_parms test_amiparms(N_INT, E_REG);
+    AmiBase::graph_type bose=AmiBase::Pi_phuu;
+	AmiBase::ami_parms test_amiparms(N_INT, E_REG,bose);
     ami.construct(test_amiparms, R0, R_array, P_array, S_array);
     AmiBase::frequency_t frequency;
-    for (int i = 0; i < ord; i++) {
+	
+    for (int i = 0; i < N_INT; i++) {
         frequency.push_back(std::complex<double>(0, 0));
     }
     frequency.push_back(ext_params.external_freq_[0]);
@@ -638,8 +647,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
         }
 	double form_factor = 1;
 	
-	//std::cout <<"printing summed momenta" << std::endl;
-	//print2d(summed_momenta);
+
     
 
 	if (param.lattice_type ==3){		
@@ -656,6 +664,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		   V_momenta.push_back({ qx, qy });
 		}
 
+
 		for (int i = 0; i<Utype.size();i++){
 			if (Utype[i]==0 || Utype[i]==1){
 				form_factor= form_factor*2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
@@ -671,7 +680,6 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	if (param.G_FUNC > 0){		
 		std::vector<std::vector<double>> V1_momenta;
 		V1_momenta.reserve(gkkp_Alpha.size());
-
 		for (const auto& gk_alpha : gkkp_Alpha) {
 			double qx = 0;
 			double qy = 0;
@@ -681,10 +689,17 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			}
 		   V1_momenta.push_back({ qx, qy });
 		}
+		/*
+		std::cout << "print summed momenta\n" ;
+		print2d(momenta);
+		std::cout <<"\n V1_momenta are" <<std::endl;
+		print2d(V1_momenta);
+		*/
 		
-		for (int i = 0; gkkp_Alpha.size();i++){
-			gk = gk*mband::gfunc_pp(V1_momenta[i],param);
-		
+		for (int i = 0; i<gkkp_Alpha.size();i++){
+			double g1= mband::gfunc_pp(V1_momenta[i],param);
+			gk = gk*g1;
+			
 		}
 
 	}
@@ -703,14 +718,6 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
         }
 
         std::vector<std::complex<double>> energy_t = mband::generate_ept(Epsilon, energy);
-		/*
-		std::cout <<"printing energy of the alpha" << std::endl;
-		std::cout <<"(";
-		for (auto e : energy_t){	
-			std::cout << e.real() <<",";
-		}
-		std::cout <<")"<<std::endl;
-		*/
 
         AmiBase::ami_vars external(energy_t, frequency, ext_params.BETA_);
 	

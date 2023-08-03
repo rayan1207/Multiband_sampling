@@ -1,5 +1,6 @@
 #include "mini_ami.hpp"
-
+AmiGraph g(AmiBase::Sigma, 0);
+AmiBase ami;
 std::vector<std::complex < double >> result_collector;
 std::vector<double> beta_collector;
 std::vector<double> mfreq_collector;
@@ -272,8 +273,7 @@ void mband::sigma_sampler( AmiGraph::graph_t &gself, mband::sampler_collector& c
 	std::cout<<std::endl <<"\n";	
 	}
 	*/
-   std::cout << " Number fermionic edge species" << std::endl;
-   std::cout << "Execution time: " << duration << " milliseconds" << std::endl;
+
 }
 
 void mband::calculate_sampled_sigma(AmiGraph::graph_t &gself, mband::sampler_collector& samp_collector,  mband::output_collector& out_collector, std::vector<double> beta_ext_vec,std::vector<double> mfreq_ext_vec ){
@@ -582,7 +582,30 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	//std::cout <<"printing summed momenta" << std::endl;
 	//print2d(summed_momenta);
     
+	/////////////////////////form factor for exteded hubbard////////////////////
+    /*
+	if (param.lattice_type ==3){		
+			std::vector<std::vector<int>> nonlocal_alpha= mband::find_non_local_bosonic_alpha(bosonic_Alpha, Utype);
+			std::vector<std::vector<double>> V_momenta;
+			V_momenta.reserve(nonlocal_alpha.size());
+        if (!nonlocal_alpha.empty()){
+			for (const auto& b_alpha : nonlocal_alpha) {
+				double qx = 0;
+				double qy = 0;
+				for (int j = 0; j < b_alpha.size(); j++) {
+					qx += static_cast<double>(b_alpha[j]) * momenta[j][0];
+					qy += static_cast<double>(b_alpha[j]) * momenta[j][1];
+				}
+			   V_momenta.push_back({ qx, qy });
+			}
 
+		    
+			for (auto vq : V_momenta) {
+				form_factor = form_factor*mband::non_local_U_formfactor(vq);
+				}	
+		}		
+	}
+	*/
 	if (param.lattice_type ==3){		
 		std::vector<std::vector<double>> V_momenta;
 		V_momenta.reserve(bosonic_Alpha.size());

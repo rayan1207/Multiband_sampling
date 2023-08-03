@@ -1,2 +1,0 @@
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/install/lib/libamigraph.so
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/install/include/./amigraph.hpp

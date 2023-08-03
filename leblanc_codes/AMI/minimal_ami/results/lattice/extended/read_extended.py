@@ -8,10 +8,10 @@ Created on Sun Jun 25 15:34:58 2023
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-file_path = "real_freq/output_1.txt"
+file_path = "real_freq/Rf_an_v8_o4_neg.txt"
 # data = np.loadtxt(file_path)es\
 U =4
-V= 4
+V= -4
 J = 0
 
 def symmetrize(filtered_df):
@@ -59,16 +59,16 @@ for i in range(4):
 print(df)
 
 # Group by the first 10 columns and sum the values in columns 9 and 10
-# df =df[(df[0] == 4)]
+df =df[(df[0] < 4)]
 grouped_df = df.groupby(df.columns[1:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
 # grouped_df= df.groupby(df.columns[:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
 
 # filtered_df = grouped_df[(grouped_df[8] == 1) & (grouped_df[9] == 1)]
-filtered_df = grouped_df[ (grouped_df[8] == 1) & (grouped_df[9] == 1) & (grouped_df[1] == 5)]
+filtered_df = grouped_df[ (grouped_df[8] == 1) & (grouped_df[9] == 1) ]
 # filtered_df = grouped_df[(grouped_df[8] == 1) & (grouped_df[9] == 1) & (grouped_df[0] == 3)]
 
-# filtered_df = symmetrize(filtered_df)
-# print(filtered_df)
+filtered_df = symmetrize(filtered_df)
+print(filtered_df)
 
 
 
@@ -77,16 +77,16 @@ data= filtered_df.to_numpy()
 
 print(data)
 
-result = np.column_stack((np.asarray(data[:,6]),np.asarray(data[:,11]), np.asarray(data[:,12])/1.5))
+# result = np.column_stack((np.asarray(data[:,6]),np.asarray(data[:,11]), np.asarray(data[:,12])/1.5))
 # # result = np.column_stack((np.asarray(data[:,10]+U/2), np.asarray(data[:,11]),np.asarray(data[:,12]), np.asarray(data[:,13])))
 # np.savetxt('mfreq/freq_b5_vn3_udn.txt',result)
 
  
-# plt.subplot(1,2,1)
-# plt.errorbar(range(len(data[:,9])),data[:,9]+U/2,yerr=data[:,10]/1.5,fmt='x-')
-# plt.subplot(1,2,2)
-# plt.errorbar(data[:,6],data[:,11],yerr=data[:,12]/1.5,fmt='x-')
-# plt.show()
+plt.subplot(1,2,1)
+plt.errorbar(range(len(data[:,9])),data[:,9],yerr=data[:,10]/1.5,fmt='x-')
+plt.subplot(1,2,2)
+plt.errorbar(range(len(data[:,9])),data[:,11],yerr=data[:,12]/1.5,fmt='x-')
+plt.show()
 # plt.subplot(1,2,1)
 # plt.errorbar(range(len(data[:,9])),data[:,10]+U/2,yerr=data[:,11],fmt='x-')
 # plt.subplot(1,2,2)
@@ -94,17 +94,17 @@ result = np.column_stack((np.asarray(data[:,6]),np.asarray(data[:,11]), np.asarr
 # plt.show()
 
 
-def plotspec(data):
-    y = spectral(data[:,9],data[:,11],data[:,5],data[:,4],data[:,3],0.125)
-    print(y)
-    plt.subplot(1,2,1)
-    plt.errorbar(data[:,5],y,yerr=data[:,10]*0,fmt='x-')
-    plt.subplot(1,2,2)
-    plt.errorbar(data[:,5],data[:,11],yerr=data[:,12],fmt='x-')
-    plt.show()
-    plt.close()
+# def plotspec(data):
+#     y = spectral(data[:,9],data[:,11],data[:,5],data[:,4],data[:,3],0.125)
+#     print(y)
+#     plt.subplot(1,2,1)
+#     plt.errorbar(data[:,5],y,yerr=data[:,10]*0,fmt='x-')
+#     plt.subplot(1,2,2)
+#     plt.errorbar(data[:,5],data[:,11],yerr=data[:,12],fmt='x-')
+#     plt.show()
+#     plt.close()
 
-plotspec(data)
+# plotspec(data)
 # grouped_df.to_csv('data.txt', sep=' ', header=False, index=False, float_format='%.7f')
 # grouped_df_ord.to_csv('data_ord.txt', sep=' ', header=False, index=False, float_format='%.7f')
 

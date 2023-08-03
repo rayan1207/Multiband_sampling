@@ -1,1 +1,0 @@
-CC=$(which mpicc) CXX=clang++ cmake -DCMAKE_INSTALL_PREFIX=/home/jpfleblanc/working_2017/leblanc_codes/AMI/libamigraph/install/ -DAMI_INCLUDE_DIR=/home/jpfleblanc/working_2017/leblanc_codes/AMI/libami/install/include  ..

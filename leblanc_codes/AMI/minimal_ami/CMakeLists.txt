@@ -18,7 +18,7 @@ add_executable(${PROJECT_NAME}
 ./src/mini_main.cpp 
 ./src/sparse_sampler_sigma.cpp
 ./src/helper.cpp
-#./src/molecule_solver.cpp
+./src/molecule_solver.cpp
 ./src/mini_ami.hpp
 ./src/sparse_pp_sampler.cpp
 )

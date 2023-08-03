@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH --time=1:00:00
+#SBATCH --tasks-per-node=32
+#SBATCH --account=rrg-jleblanc
+#SBATCH --mem=125G
+#SBATCH --nodes=3
+#SBATCH --job-name=rayan
+ulimit -s 10240
+
+ time srun /home/jleblanc//workflow_2022_09/leblanc_codes/AMI/diagami_IS/build/diagami_mpi params.param
+
+#time srun /home/jleblanc//workflow_2022/leblanc_codes/AMI/diagami_IS/build/diagami_mpi diagami_mpi.out.h5 params.param

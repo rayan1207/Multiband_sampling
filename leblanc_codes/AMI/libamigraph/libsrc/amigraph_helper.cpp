@@ -1400,11 +1400,11 @@ kkp.push_back(g[*ei].g_struct_.alpha_);
 
 void AmiGraph::get_pp_kkp(std::vector<AmiBase::alpha_t> &kkp, AmiGraph::graph_t &g){
 
-
+std::cout <<"obtaining kkp alphas....\n" <<std::endl;
 kkp.clear();
 
 AmiGraph::vertex_t start_v, end_v;
-
+AmiGraph::vertex_t start_v2;
  
 int index=find_start_index(g, start_v);
 int end_index=find_end_index(g,end_v);
@@ -1420,9 +1420,9 @@ if(g[*ei].g_struct_.stat_==AmiBase::Fermi){
 if(source(*ei,g)==start_v){
 // std::cout<<"Found for "<< g[source(*ei,g)].index_<<"-"<<g[target(*ei,g)].index_<<std::endl;
 kkp.push_back(g[*ei].g_struct_.alpha_);
+start_v2=target(*ei,g);
 break;
 }	
-
 // if( target(*ei,g)==end_v){
 // std::cout<<"Found for "<< g[source(*ei,g)].index_<<"-"<<g[target(*ei,g)].index_<<std::endl;
 // kkp.push_back(g[*ei].g_struct_.alpha_);
@@ -1437,7 +1437,8 @@ break;
 	
 // now we have the start edge 
 
-vertex_t current=start_v;
+// vertex_t current=start_v;
+vertex_t current=start_v2;
 vertex_t next;
 bool cont=true;
 do{

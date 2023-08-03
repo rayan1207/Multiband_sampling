@@ -1,2 +1,0 @@
-# beta mu kdim kx ky reW imW
-5.0 0.0 2 3.14159 1.0472 0 0.628318

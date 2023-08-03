@@ -1,8 +1,0 @@
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/build/CMakeFiles/amigraph.dir
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/build/CMakeFiles/bubble_gen.dir
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/build/CMakeFiles/edit_cache.dir
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/build/CMakeFiles/rebuild_cache.dir
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/build/CMakeFiles/list_install_components.dir
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/build/CMakeFiles/install.dir
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/build/CMakeFiles/install/local.dir
-/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/libamigraph/build/CMakeFiles/install/strip.dir

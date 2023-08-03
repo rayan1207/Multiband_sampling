@@ -65,7 +65,7 @@ struct params_param {
 	int  min_ord;		
 	int  max_ord;
     int molecular;
-    double E_reg;
+    double E_reg=0;
     int lattice_type;
 	int molecular_type;
     double set_precision;
@@ -76,8 +76,8 @@ struct params_param {
 	int MC_num;
 	int in;
 	int out;
-	double molec_beta;
-	int molec_mfreq;
+	double molec_beta=50;
+	int molec_mfreq=100;
 	int time;
 	double V;
 	std::string graph;
