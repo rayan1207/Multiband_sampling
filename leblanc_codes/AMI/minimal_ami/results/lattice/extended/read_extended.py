@@ -8,10 +8,10 @@ Created on Sun Jun 25 15:34:58 2023
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-file_path = "real_freq/Rf_an_v8_o4_neg.txt"
+file_path = "o1234_v8_e8.txt"
 # data = np.loadtxt(file_path)es\
-U =4
-V= -4
+U =2
+V= 2
 J = 0
 
 def symmetrize(filtered_df):
@@ -59,7 +59,7 @@ for i in range(4):
 print(df)
 
 # Group by the first 10 columns and sum the values in columns 9 and 10
-df =df[(df[0] < 4)]
+df =df[(df[0] == 1)]
 grouped_df = df.groupby(df.columns[1:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
 # grouped_df= df.groupby(df.columns[:10].tolist())[[10, 11, 12, 13]].sum().reset_index()
 
@@ -78,8 +78,8 @@ data= filtered_df.to_numpy()
 print(data)
 
 # result = np.column_stack((np.asarray(data[:,6]),np.asarray(data[:,11]), np.asarray(data[:,12])/1.5))
-# # result = np.column_stack((np.asarray(data[:,10]+U/2), np.asarray(data[:,11]),np.asarray(data[:,12]), np.asarray(data[:,13])))
-# np.savetxt('mfreq/freq_b5_vn3_udn.txt',result)
+result = np.column_stack((np.asarray(data[:,9]+U/2), np.asarray(data[:,10]),np.asarray(data[:,11]), np.asarray(data[:,12])))
+np.savetxt('Ibsal/ord1_kcut.txt',result)
 
  
 plt.subplot(1,2,1)

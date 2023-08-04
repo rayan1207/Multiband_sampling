@@ -1,6 +1,7 @@
 Multiorbital/
 extract_coefficients_pairs_py3.py
 leblanc_codes/6_order_all_groups/
+leblanc_codes/libami/
 leblanc_codes/AMI/.gitignore
 leblanc_codes/AMI/FT_ami/
 leblanc_codes/AMI/amiCuba/
