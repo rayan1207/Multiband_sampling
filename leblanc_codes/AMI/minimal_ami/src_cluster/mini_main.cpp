@@ -58,10 +58,17 @@ for(int i=0; i<extern_list.size();i++){
 }
 
 
-else if (params.molecular==0&& params.lattice_type ==2){
+else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type ==4) ){
+	 if (params.lattice_type==2){
      interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/bilayer_interaction.txt");
 	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/loader/bilayer_interaction.txt",5);
-     band_energy = {0,0};
+     }
+	 else if (params.lattice_type==4){
+     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/trilayer_interaction.txt");
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/loader/trilayer_interaction.txt",5);
+     }
+	 
+	 band_energy = {0,0};
 
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;	
 	std::string infile("ext_vars.dat");

@@ -70,9 +70,9 @@ struct params_param {
 	int molecular_type;
     double set_precision;
     bool hatree_fock;
-    double tp;
-    double tperp;
-	double tperp_p;
+    double tp=0;
+    double tperp=0;
+	double tperp_p=0;
 	int MC_num;
 	int in;
 	int out;
@@ -84,10 +84,12 @@ struct params_param {
 	double cutoff_value=1e8;
 	int mfreq_indp = 0;
 	int G_FUNC=0;
+
 };
 
 
 double Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
+double Trilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
 void assign_label(AmiGraph::graph_t &g1, AmiGraph::edge_vector_t edge,vector<int> vector);
 std::vector<std::vector<int>>  findmatch(std::vector<int> v1,AmiGraph::edge_vector_t &inter_vec);
 std::vector<int> generate_edge_species(AmiGraph::graph_t &g, AmiGraph::edge_vector_t edge);

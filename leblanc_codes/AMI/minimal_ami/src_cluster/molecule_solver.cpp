@@ -606,7 +606,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		}		
 	}
 	*/
-	if (param.lattice_type ==3){		
+	if (param.lattice_type ==3 || param.lattice_type ==2 ){		
 		std::vector<std::vector<double>> V_momenta;
 		V_momenta.reserve(bosonic_Alpha.size());
 
@@ -619,15 +619,24 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			}
 		   V_momenta.push_back({ qx, qy });
 		}
-
+        if (param.lattice_type==3){
 		for (int i = 0; i<Utype.size();i++){
 			if (Utype[i]==0 || Utype[i]==1){
-				form_factor= form_factor*2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
+				form_factor= form_factor*2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
 			}
 			else {
-				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));	
+				form_factor= form_factor*(1.0+  2*ext_params.H_*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));	
 	
-			}	
+				}	
+			}
+		}
+		else if (param.lattice_type ==2){
+			for (int i =0;i<Utype.size();i++){
+				if (Utype[i]>11 && Utype[i]<16){
+					form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+				}
+				
+			}
 		}
 	}
 		

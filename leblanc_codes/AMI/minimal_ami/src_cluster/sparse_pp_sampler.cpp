@@ -625,7 +625,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
     double E_REG = param.E_reg;
     int N_INT = ord+1;
     ami.precision_cutoff=param.set_precision;
-    AmiBase::graph_type bose=AmiBase::Pi_phuu;
+    AmiBase::graph_type bose=AmiBase::Pi_ppud;
 	AmiBase::ami_parms test_amiparms(N_INT, E_REG,bose);
     ami.construct(test_amiparms, R0, R_array, P_array, S_array);
     AmiBase::frequency_t frequency;
@@ -681,7 +681,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 
     
 
-	if (param.lattice_type ==3){		
+	if (param.lattice_type ==2 || param.lattice_type==3){		
 		std::vector<std::vector<double>> V_momenta;
 		V_momenta.reserve(bosonic_Alpha.size());
 
@@ -695,15 +695,25 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		   V_momenta.push_back({ qx, qy });
 		}
 
-
-		for (int i = 0; i<Utype.size();i++){
-			if (Utype[i]==0 || Utype[i]==1){
+		if (param.lattice_type ==3){
+			for (int i = 0; i<Utype.size();i++){
+				if (Utype[i]==0 || Utype[i]==1){
 				form_factor= form_factor*2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
-			}
-			else {
+						}
+				else {
 				form_factor= form_factor*(1.0+  2*ext_params.H_*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));	
 	
-			}	
+				}	
+			}
+		}
+		else if (param.lattice_type==2){
+			for (int i =0;i<Utype.size();i++){
+				if (Utype[i]>11 && Utype[i]<16){
+				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+				}
+				
+			}
+			
 		}
 	}
 	double gk=1;

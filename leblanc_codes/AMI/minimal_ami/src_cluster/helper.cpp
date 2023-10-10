@@ -177,19 +177,36 @@ double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double
 */
 double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
 	if (species ==1){
-		return -2*(1+ext.MU_.imag())*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
 	}
 	if (species ==2){
-		return -2*(1+ext.MU_.imag())*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
 	}
 	if (species ==3){
-		return -2*(1-ext.MU_.imag())*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
 	}
 	if (species ==4){
-		return -2*(1-ext.MU_.imag())*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
 	}
 	else{
 		std::cerr<<" Species numer should be 1,2,3 and 4 for bi-layer hubbard problem"<< std::endl;
+		return 0.0;
+	}
+
+}
+double mband::Trilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
+	if (species ==1 || species ==2){
+		return -2*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+	}
+	if (species ==3 || species ==4){
+		return -2*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+	}
+	if (species ==5 || species ==6 ){
+		return -2*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+	}
+
+	else{
+		std::cerr<<" Species numer should be 1-6 for Tri-layer hubbard problem"<< std::endl;
 		return 0.0;
 	}
 
