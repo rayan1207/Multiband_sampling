@@ -113,7 +113,7 @@ INSTALL(DIRECTORY "${CMAKE_SOURCE_DIR}/libsrc/." # source directory
 # # target_link_libraries(${PROJECT_NAME}_test ${CMAKE_CURRENT_SOURCE_DIR}/../libami/install/lib/libamibase.so m stdc++fs boost_system boost_filesystem )
 # # install (TARGETS ${EXEC_NAME} DESTINATION bin )
 
-if(!MACOSX)
+#if(!MACOSX)
 add_executable(bubble_gen 
 	./libsrc/bubble_main.cpp 
 	./libsrc/amigraph_constructs.cpp 
@@ -147,7 +147,7 @@ add_executable(bubble_gen
 target_link_libraries(bubble_gen ${CMAKE_CURRENT_SOURCE_DIR}/../../../libami/install/lib/libami.so ${CMAKE_CURRENT_SOURCE_DIR}/../libamicalc/install/lib/libamicalc.so m stdc++fs boost_system boost_filesystem )
 install (TARGETS ${EXEC_NAME} DESTINATION bin )
 
-endif()
+#endif()
 
 # add_executable(wickstest
 # ./libsrc/wicksmain.cpp 

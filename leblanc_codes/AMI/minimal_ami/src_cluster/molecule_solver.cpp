@@ -76,7 +76,7 @@ AmiGraph g(AmiBase::Sigma, 0);
 					AmiBase::P_t P_array;
 					AmiBase::R_t R_array;
 					AmiBase::g_prod_t R0 =gs_vec;
-					ami.precision_cutoff=0;
+					//ami.precision_cutoff=0;
 					ami.drop_bosonic_diverge =true;
 					ami.drop_matsubara_poles = false;
 					ami.construct(test_amiparms , R0 , R_array , P_array , S_array ); 
@@ -167,7 +167,7 @@ void mband::molecular_solver_ext( AmiGraph::graph_t &gself, mband::output_collec
 	}
 
 	int n = 2*ord-1; //number of fermionic lines
-	double E_REG=0; 
+	double E_REG=1e-7; 
 	int N_INT=ord;  
 	AmiBase::ami_parms test_amiparms(N_INT, E_REG);
 	AmiBase::frequency_t frequency;
@@ -201,7 +201,7 @@ void mband::molecular_solver_ext( AmiGraph::graph_t &gself, mband::output_collec
 					AmiBase::P_t P_array;
 					AmiBase::R_t R_array;
 					AmiBase::g_prod_t R0 =gs_vec;
-					ami.precision_cutoff=0;
+					//ami.precision_cutoff=0;
 					ami.drop_bosonic_diverge =true;
 					ami.drop_matsubara_poles = false;
 					ami.construct(test_amiparms , R0 , R_array , P_array , S_array ); 

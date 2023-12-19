@@ -11,7 +11,7 @@ int seed =0;
 AmiBase::graph_type baseType;
 if (params.graph_type == 0) {
     baseType = AmiBase::Sigma;
-} else {
+} else  if (params.graph_type == 1){
     baseType = AmiBase::Pi_ppud;
 }
 
@@ -59,12 +59,17 @@ for(int i=0; i<extern_list.size();i++){
 	 g.print_all_edge_info(ggm[2][0].graph_vec[0]);
 }
 
-
-else if (params.molecular==0&& params.lattice_type ==2){
-     interaction = readFile("../loader/bilayer_interaction.txt");
-	 interaction_value = readFile1("../loader/bilayer_interaction.txt",5);
+else if (params.molecular==0&& (params.lattice_type ==2||params.lattice_type==4) ){
+	 if (params.lattice_type==2){
+		 interaction = readFile("../loader/bilayer_interaction.txt");
+		 interaction_value = readFile1("../loader/bilayer_interaction.txt",5);}
+	 else if (params.lattice_type==4){
+		 interaction = readFile("../loader/trilayer_interaction.txt");
+		 interaction_value = readFile1("../loader/trilayer_interaction.txt",5);	 
+	}
      band_energy = {0,0};
-
+    print2d(interaction);
+	std::cout<<"print ends"<<std::endl;
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;	
 	std::string infile("../loader/ext_vars.dat");
 	std::cout<<"Reading external parameters from ext_vars.dat"<<std::endl;
@@ -77,7 +82,7 @@ else if (params.molecular==0&& params.lattice_type ==2){
 	}
 	else if (params.graph_type==1)
 	{
-	g.read_ggmp("../graphs/ggm_ppvertex_bl/",ggm, max);	
+	g.read_ggmp("../graphs/ggm_ppvertex_ext_hubb/",ggm, max);	
 	}
 	g.ggm_label(ggm,0);    
 	
@@ -86,9 +91,8 @@ else if (params.molecular==0&& params.lattice_type ==2){
 		std::cout<<extern_list[i].BETA_<<" "<<extern_list[i].MU_<<" "<< extern_list[i].H_<<" "<<extern_list[i].KDIM_<<" "<<extern_list[i].external_k_list_[0][0]<<" "<<extern_list[i].external_k_list_[0][1] <<" "<<extern_list[i].external_freq_[0]<<std::endl;
 	
 		}	
-
   }
-  
+ 
   else if (params.molecular==0&& params.lattice_type ==3){
     interaction = readFile("../loader/extended_U.txt");
 	interaction_value = readFile1("../loader/extended_U.txt",5);
@@ -100,10 +104,10 @@ else if (params.molecular==0&& params.lattice_type ==2){
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	if (params.graph_type=0){
+	if (params.graph_type==0){
 	g.read_ggmp("../graphs/ggm_sigma_no_tp/",ggm, max);}
-	else if (params.graph_type=1)
-	{g.read_ggmp("../graphs/ggm_ppvertex/",ggm,max);}
+	else if (params.graph_type==1)
+	{g.read_ggmp("../graphs/ggm_ppvertex_ext_hubb/",ggm,max);}
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
@@ -127,7 +131,7 @@ else if (params.molecular==0&& params.lattice_type ==2){
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;		
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_sigma_nofock_notp/",ggm, max);
+	g.read_ggmp("../graphs/ggm_sigma_nofock_notp_nl/",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0);    
@@ -142,7 +146,7 @@ else if (params.molecular==0&& params.lattice_type ==2){
 	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_sigma_nofock_notp/",ggm, max);
+	g.read_ggmp("../graphs/ggm_sigma_nofock_notp_nl/",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0);    
@@ -175,8 +179,10 @@ for (int i = min_ord; i < max_ord+1; ++i) {
         for (int k = 0; k < ggm[i][j].graph_vec.size(); ++k) {
             mband::sampler_collector sigma_collector;
 			if (params.graph_type==0){
+			std::cout << "sampling sigma with params " << params.graph_type<<std::endl;
             mb.sigma_sampler(ggm[i][j].graph_vec[k], sigma_collector);}
 			else if (params.graph_type ==1){
+				std::cout << "sampling particle particle with params " << params.graph_type<<std::endl;
 				mb.pp_sampler(ggm[i][j].graph_vec[k], sigma_collector,bandindex);}
 			
 			if (!sigma_collector.fermionic_edge_species.empty()){
@@ -189,9 +195,7 @@ for (int i = min_ord; i < max_ord+1; ++i) {
 					sigma_ToSum.push_back(sigma_collector);
 					sigma_FromGraph.push_back(ggm[i][j].graph_vec[k]);
 				}
-			
-				
-				
+		
 			}
 		}
 	}
@@ -307,14 +311,18 @@ double U = 1;
 
 std::ofstream outputFile;
 if (params.lattice_type==1){
-outputFile.open("../results/lattice/Hubbard/output.txt");
+outputFile.open("../results/lattice/Hubbard/output1.txt");
 }
 else if (params.lattice_type==2){
-outputFile.open("../results/lattice/Bilayer_Hubbard/output.txt");
+outputFile.open("../results/lattice/Bilayer_Hubbard/output2.txt");
+	
+}
+else if (params.lattice_type==4){
+outputFile.open("../results/lattice/Trilayer_Hubbard/output4.txt");
 	
 }
 else if (params.lattice_type==3){
-outputFile.open("../results/lattice/extended/output.txt");
+outputFile.open("../results/lattice/extended/output3.txt");
 	
 }	// Open the result file for writing
 
@@ -337,10 +345,10 @@ outputFile.open("../results/lattice/extended/output.txt");
                     std::cout << g.graph_order(sigma_ToSum[i].graph) << " ";
                     outputFile << g.graph_order(sigma_ToSum[i].graph) << " ";
 
-                    std::cout << extern_list[j].BETA_ << " " << extern_list[j].MU_.real() << " " << extern_list[j].H_ << " "
-                              << extern_list[j].external_k_list_[0][0] << " " << extern_list[j].external_k_list_[0][1]
-                              << " " << extern_list[j].external_freq_[0].real() << " " << extern_list[j].external_freq_[0].imag()<<" ";
-                    outputFile << extern_list[j].BETA_ << " " << extern_list[j].MU_.real() << " " << extern_list[j].H_ << " "
+                    std::cout << extern_list[j].BETA_ << " " << extern_list[j].MU_.real() << " " <<extern_list[j].MU_.imag() << " "<< extern_list[j].H_ << " "
+                               << extern_list[j].external_k_list_[0][0] << " " << extern_list[j].external_k_list_[0][1]
+                               << " " << extern_list[j].external_freq_[0].real() << " " << extern_list[j].external_freq_[0].imag()<<" ";
+                    outputFile << extern_list[j].BETA_ << " " << extern_list[j].MU_.real() << " " <<extern_list[j].MU_.imag() << " "<< extern_list[j].H_ << " "
                                << extern_list[j].external_k_list_[0][0] << " " << extern_list[j].external_k_list_[0][1]
                                << " " << extern_list[j].external_freq_[0].real() << " " << extern_list[j].external_freq_[0].imag()<<" ";
 
@@ -376,7 +384,7 @@ std::cout << "molecular: " << params.molecular << std::endl;
 std::cout << "E_reg: " << params.E_reg << std::endl;
 std::cout << "lattice_type: " << params.lattice_type << std::endl;
 std::cout << "set_precision: " << params.set_precision << std::endl;
-std::cout << "hatree_fock: " << std::boolalpha << params.hatree_fock << std::endl;
+std::cout << "hatree_fock: " << params.hatree_fock << std::endl;
 std::cout << "tp: " << params.tp << std::endl;
 std::cout << "tperp_p: " << params.tperp_p << std::endl;
 std::cout << "tperp: " << params.tperp << std::endl;
@@ -436,7 +444,6 @@ std::vector<int> line = {params.in,params.out};
         endGraph += remainder;
     }
  
-
     int currentGraphCount = 0;
    
     for (int i = min_ord; i <= max_ord; ++i) {

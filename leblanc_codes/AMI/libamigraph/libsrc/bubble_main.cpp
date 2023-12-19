@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 		pairs=atoi(argv[6]);
 	}
 
-bool ppvertex=false;//true;//false;  
+bool ppvertex=true;//false;//true;//false;  
   
 //int seed=0; // but this can be set to anything
 auto now =std::chrono::high_resolution_clock::now();
@@ -66,13 +66,13 @@ auto seed = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since
 
 std::cout<< seed <<" " <<std::endl;
 // AmiGraph g(AmiBase::FORCE,seed);//g(AmiBase::Pi_phuu, seed);//g(AmiCalc::Pi,seed);//g(AmiCalc::Hartree,seed);
-AmiGraph g(AmiBase::Greens,seed);
+//AmiGraph g(AmiBase::Greens,seed);
 // AmiGraph g(AmiBase::Pi_phuu,seed);
-// AmiGraph g(AmiBase::Pi_ppud,seed);
+ AmiGraph g(AmiBase::Pi_ppud,seed);
 // AmiGraph g(AmiBase::Pi_phuu,seed);
 // AmiGraph g(AmiBase::Sigma,seed); // TODO: This never works I don't think - it misses some graphs. 
 
-g.ami_parameters.int_type_=AmiBase::coulomb;//AmiBase::hubbard;//AmiBase::coulomb;//AmiBase::hubbard;//AmiBase::coulomb;
+g.ami_parameters.int_type_=AmiBase::hubbard;//AmiBase::hubbard;//AmiBase::coulomb;
 
 std::cout<<"Constructor finished"<<std::endl;
 

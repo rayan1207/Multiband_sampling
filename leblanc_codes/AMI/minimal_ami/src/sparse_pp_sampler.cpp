@@ -32,6 +32,34 @@ void mband::find_four_pp_lines(AmiGraph::graph_t &graph, AmiGraph::edge_vector_t
 
 }
 
+void mband::check_iso_pp(AmiGraph::graph_t g, AmiGraph::gg_matrix_t ggm, int min_ord, int max_ord) {
+    bool match_found = false; // Add a flag to track if a match is found
+
+    for (int i = min_ord; i < max_ord + 1; ++i) {
+        for (int j = 0; j < ggm[i].size(); ++j) {
+            for (int k = 0; k < ggm[i][j].graph_vec.size(); ++k) {
+                if (gp.spin_iso(g, ggm[i][j].graph_vec[k])) {
+                    std::cout << "matches-> o" << std::to_string(i) << "_g" << std::to_string(j)
+                              << "_n" << std::to_string(k) << std::endl;
+                    match_found = true;
+                    break; 
+                }
+            }
+            if (match_found) {
+                break; 
+            }
+        }
+        if (match_found) {
+            break; 
+        }
+    }
+
+    if (!match_found) {
+        std::cout << "no match found" << std::endl;
+    }
+}
+
+
 AmiGraph::vertex_t mband::find_next_ppv_outedge(AmiGraph::vertex_t &start, AmiGraph::graph_t &graph){ 
 AmiGraph::edge_t e;
 auto range = boost::out_edges(start, graph);
@@ -140,17 +168,48 @@ do {
 
 
 void mband::assign_bandindex_fourline_pp(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &pair1,AmiGraph::edge_vector_t &pair2, std::vector<int> &bandindex){
+std::vector<int> band1;
+std::vector<int> band2;
+/*
+if (bandindex[0] <10 && bandindex[1]<10) {
+	for (auto edge : pair1){
+		int spin = graph[edge].spin;
+		graph[edge].g_struct_.species_ = bandindex[spin];	
+	}
+	for (auto edge : pair2){
+		int spin = graph[edge].spin; 
+		graph[edge].g_struct_.species_ = bandindex[spin];	
+	}
+}
+*/
+	int a1 = bandindex[0]/10;
+	int a2 = bandindex[0]%10;
+	int b1 = bandindex[1]/10;
+	int b2 = bandindex[1]%10;
+	band1 ={a1,b1};
+	band2 ={a2,b2};
+	print1d(band1);
+	print1d(band2);
+	
+   if (graph[pair1[0]].spin==0){
+	   graph[pair1[0]].g_struct_.species_ = band1[0];
+	   graph[pair1[1]].g_struct_.species_ = band1[1];
+	   graph[pair2[0]].g_struct_.species_ = band2[0];
+	   graph[pair2[1]].g_struct_.species_ = band2[1];  
+   }
+   
+   else {
+	   graph[pair1[0]].g_struct_.species_ = band2[0];
+	   graph[pair1[1]].g_struct_.species_ = band2[1];
+	   graph[pair2[0]].g_struct_.species_ = band1[0];
+	   graph[pair2[1]].g_struct_.species_ = band1[1];  
+	   
+		}
+	
+	}
 
-for (auto edge : pair1){
-	int spin = graph[edge].spin;
-	graph[edge].g_struct_.species_ = bandindex[spin];	
-}
-for (auto edge : pair2){
-	int spin = graph[edge].spin; 
-	graph[edge].g_struct_.species_ = bandindex[spin];	
-}
 
-}
+
 void mband::solve_pp_ord1(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,
 std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex){
     AmiGraph::edge_vector_t pair1;
@@ -571,10 +630,10 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	int loop = gp.count_fermi_loops(gself);
 	
 	double power= (double) (ord+loop);
-    double prefactor = std::pow(-1,power);
-	double prefactor1 = gp.get_prefactor(gself,ord);
-	std::cout << "1prefactor used is" << prefactor << "with loop "<< loop<<"ord is "<< ord<<"bubble no is " <<gp.count_bubbles(gself) <<std::endl;
-	std::cout << "2prefactor used is" << prefactor1 <<std::endl; 
+    //double prefactor = std::pow(-1,power);
+	double prefactor = gp.get_prefactor(gself,ord);
+	//std::cout << "1prefactor used is" << prefactor << "with loop "<< loop<<"ord is "<< ord<<"bubble no is " <<gp.count_bubbles(gself) <<std::endl;
+	//std::cout << "2prefactor used is" << prefactor1 <<std::endl; 
 	
     int n = 2 * ord +2; // number of fermionic lines
     AmiBase::g_struct gs[n];
@@ -594,7 +653,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
     double E_REG = param.E_reg;
     int N_INT = ord+1;
     ami.precision_cutoff=param.set_precision;
-    AmiBase::graph_type bose=AmiBase::Pi_phuu;
+    AmiBase::graph_type bose=AmiBase::Pi_ppud;
 	AmiBase::ami_parms test_amiparms(N_INT, E_REG,bose);
     ami.construct(test_amiparms, R0, R_array, P_array, S_array);
     AmiBase::frequency_t frequency;
@@ -650,7 +709,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 
     
 
-	if (param.lattice_type ==3){		
+	if (param.lattice_type ==3 ||param.lattice_type ==2 ){		
 		std::vector<std::vector<double>> V_momenta;
 		V_momenta.reserve(bosonic_Alpha.size());
 
@@ -664,7 +723,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		   V_momenta.push_back({ qx, qy });
 		}
 
-
+        /*
 		for (int i = 0; i<Utype.size();i++){
 			if (Utype[i]==0 || Utype[i]==1){
 				form_factor= form_factor*2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
@@ -674,7 +733,29 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	
 			}	
 		}
-	}
+		ext.MU_.real()+0.0*ext.H_
+		*/
+		if (param.lattice_type ==3){
+			for (int i = 0; i<Utype.size();i++){
+				if (Utype[i]==0 || Utype[i]==1){
+				form_factor= form_factor*2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
+						}
+				else {
+				form_factor= form_factor*(1.0+  2*ext_params.H_*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));	
+	
+				}	
+			}
+		}
+		else if (param.lattice_type==2){
+			for (int i =0;i<Utype.size();i++){
+				if (Utype[i]>11 && Utype[i]<16){
+				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+				}
+				
+			}
+			
+		}
+	} 
 	double gk=1;
 	
 	if (param.G_FUNC > 0){		
@@ -715,8 +796,10 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			if (param.lattice_type == 2 ) {
                 energy.push_back(mband::Bilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
             }
+			if (param.lattice_type == 4 ) {
+                energy.push_back(mband::Trilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
         }
-
         std::vector<std::complex<double>> energy_t = mband::generate_ept(Epsilon, energy);
 
         AmiBase::ami_vars external(energy_t, frequency, ext_params.BETA_);

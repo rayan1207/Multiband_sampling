@@ -167,7 +167,7 @@ void mband::molecular_solver_ext( AmiGraph::graph_t &gself, mband::output_collec
 	}
 
 	int n = 2*ord-1; //number of fermionic lines
-	double E_REG=0; 
+	double E_REG=1e-7; 
 	int N_INT=ord;  
 	AmiBase::ami_parms test_amiparms(N_INT, E_REG);
 	AmiBase::frequency_t frequency;
@@ -201,7 +201,7 @@ void mband::molecular_solver_ext( AmiGraph::graph_t &gself, mband::output_collec
 					AmiBase::P_t P_array;
 					AmiBase::R_t R_array;
 					AmiBase::g_prod_t R0 =gs_vec;
-					ami.precision_cutoff=0;
+					//ami.precision_cutoff=0;
 					ami.drop_bosonic_diverge =true;
 					ami.drop_matsubara_poles = false;
 					ami.construct(test_amiparms , R0 , R_array , P_array , S_array ); 
@@ -233,7 +233,7 @@ void mband::molecular_solver_ext( AmiGraph::graph_t &gself, mband::output_collec
 					frequency.clear();
 				}
 			}
-			
+		
     outFile.close();
 	std::cout <<"Pre-factor used is " << prefactor <<std::endl;
 	
@@ -606,7 +606,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		}		
 	}
 	*/
-	if (param.lattice_type ==3){		
+	if (param.lattice_type ==3 || param.lattice_type ==2 ){		
 		std::vector<std::vector<double>> V_momenta;
 		V_momenta.reserve(bosonic_Alpha.size());
 
@@ -619,15 +619,24 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			}
 		   V_momenta.push_back({ qx, qy });
 		}
-
+        if (param.lattice_type==3){
 		for (int i = 0; i<Utype.size();i++){
 			if (Utype[i]==0 || Utype[i]==1){
-				form_factor= form_factor*2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
+				form_factor= form_factor*2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
 			}
 			else {
-				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));	
+				form_factor= form_factor*(1.0+  2*ext_params.H_*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));	
 	
-			}	
+				}	
+			}
+		}
+		else if (param.lattice_type ==2){
+			for (int i =0;i<Utype.size();i++){
+				if (Utype[i]>11 && Utype[i]<16){
+					form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+				}
+				
+			}
 		}
 	}
 		
@@ -641,6 +650,9 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
             }
 			if (param.lattice_type == 2 ) {
                 energy.push_back(mband::Bilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
+	    if (param.lattice_type == 4 ) {
+                energy.push_back(mband::Trilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
             }
         }
 

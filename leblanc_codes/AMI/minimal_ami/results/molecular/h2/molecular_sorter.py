@@ -27,7 +27,9 @@ grouped_df = merged_df.groupby(df.columns[:2].tolist())[[2,3]].sum().reset_index
 
 data= grouped_df.to_numpy()
 
-
+plt.subplot(1,2,1)
 plt.plot(data[:,1],data[:,2])
+plt.subplot(1,2,2)
+plt.plot(data[:,1],data[:,3])
 plt.show()
 

@@ -597,6 +597,33 @@ std::cout << "this order not possible";}
 
 
 
+void mband::check_iso_sigma(AmiGraph::graph_t graph, AmiGraph::gg_matrix_t ggm, int min_ord, int max_ord) {
+    AmiGraph g(AmiBase::Sigma, 0);
+	bool match_found = false; // Add a flag to track if a match is found
+
+    for (int i = min_ord; i < max_ord + 1; ++i) {
+        for (int j = 0; j < ggm[i].size(); ++j) {
+            for (int k = 0; k < ggm[i][j].graph_vec.size(); ++k) {
+                //if (g.full_iso(graph, ggm[i][j].graph_vec[k])) {
+				if (g.is_isomorphic(graph, ggm[i][j].graph_vec[k])) {
+                    std::cout << "matches-> o" << std::to_string(i) << "_g" << std::to_string(j)
+                              << "_n" << std::to_string(k) << std::endl;
+                    match_found = true;
+                    break;
+                }
+            }
+            if (match_found) {
+                break; 
+            }
+        }
+        if (match_found) {
+            break; 
+        }
+    }
+    if (!match_found) {
+        std::cout << "no match found" << std::endl;
+    }
+}
 
 
 		

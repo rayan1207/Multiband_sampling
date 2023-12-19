@@ -140,7 +140,7 @@ double mband::Umatch(const std::vector<std::vector<int>>& int_matrix, const std:
        }
     return U;
 }
-
+/*
 double mband::Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
 	if (species ==1){
 		return -2*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-0.5*ext.H_-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
@@ -155,6 +155,21 @@ double mband::Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> moment
 
 }
 
+*/
+double mband::Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
+	if (species ==1){
+		return -2*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-0.0*ext.H_-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+	}
+	if (species ==2){
+		return -2*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()+0.0*ext.H_-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+	}
+	else{
+		std::cerr<<" Species numer should be 1 or 2 for hubbard problem"<< std::endl;
+		return 0.0;
+	}
+
+}
+/*
 double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
 	if (species ==1){
 		return -2*(1+param.tperp_p)*(std::cos(momenta[0]) + std::cos(momenta[1]))-param.tperp -ext.MU_.real()-0.5*ext.H_-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
@@ -173,22 +188,52 @@ double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double
 		return 0.0;
 	}
 
+}*/
+double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
+	if (species ==1){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+	}
+	if (species ==2){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+	}
+	if (species ==3){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+	}
+	if (species ==4){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+	}
+	else{
+		std::cerr<<" Species numer should be 1,2,3 and 4 for bi-layer hubbard problem"<< std::endl;
+		return 0.0;
+	}
+
 }
+
+double mband::Trilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
+	if (species ==1 || species ==2){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+	}
+	if (species ==3 || species ==4){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+	}
+	if (species ==5 || species ==6 ){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+	}
+
+	else{
+		std::cerr<<" Species numer should be 1-6 for Tri-layer hubbard problem"<< std::endl;
+		return 0.0;
+	}
+
+}
+
+
 
 double mband::non_local_U_formfactor(std::vector<double> vq) {
     return 2 * std::cos(vq[0]) + 2 * std::cos(vq[1]);
 }
 
-std::vector<std::vector<int>> mband::find_non_local_bosonic_alpha(std::vector<std::vector<int>> bosonic_Alpha, std::vector<int> Uindex) {
-    std::vector<std::vector<int>> filtered_alpha;
-    for (int i = 0; i < bosonic_Alpha.size(); i++) {
-        if (Uindex[i] > 3) {
-            filtered_alpha.push_back(bosonic_Alpha[i]);
 
-        }
-    }
-    return filtered_alpha;
-}
 
 
 double mband::Stdev(double total_sq, double mean, int n) {

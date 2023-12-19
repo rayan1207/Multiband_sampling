@@ -13,7 +13,6 @@ params_loader("../loader/params.txt", params);
 	 std::vector<double> band_energy = readFile1("../loader/ccpdvz_h.txt",2);
 	 std::cout<<interaction.size();
     
-
 	
 	
 ////////////////////////////James loading  stuff/////////////////////////////////
@@ -38,13 +37,12 @@ params_loader("../loader/params.txt", params);
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=4;
 	//g.read_ggmp("../example_graphs/ggm_sigma_nofock_notp/",ggm, max);
-	gp.read_ggmp("../graphs/ggm_ppvertex/",ggm, max);
+	gp.read_ggmp("../graphs/ggm_ppvertex_ext_hubb/",ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	
 	
 	gp.ggm_label(ggm,0);
-	AmiGraph::graph_t graph = ggm[4][0].graph_vec[0];
 
 	
 /////////////////////////////////////loading and labelling ends////////////////////
@@ -156,7 +154,7 @@ std::cout << graph[start_vertex].index_ << std::endl;
 	
 	
 std::vector<int> bandindex = {1,2};	
-/*
+
 std::vector<mband::sampler_collector> pp_ToSum;
 std::vector<AmiGraph::graph_t> pp_FromGraph;
 for (int i = min_ord; i < max_ord+1; ++i) {
@@ -173,8 +171,10 @@ for (int i = min_ord; i < max_ord+1; ++i) {
 		}
 	}
 }
-*/
-AmiGraph::graph_t gt= ggm[3][3].graph_vec[0];
+
+std::cout<< "size of pp graphs are  " << pp_FromGraph.size() <<std::endl;
+/*
+AmiGraph::graph_t gt= ggm[max_ord][params.in].graph_vec[params.out];
  mband::sampler_collector pp_collector;
   mb.pp_sampler(gt, pp_collector,bandindex);
 std::vector<std::vector<int>> alpha;
@@ -182,11 +182,17 @@ std::cout <<"starts here \n\n";
 gp.get_pp_kkp(alpha,gt);
 print2d(alpha);
 std::cout<<"ends here \n";
-gp.print_all_edge_info(gt);
+int ord = gp.graph_order(gt);
+std::cout <<"prefactor is " <<gp.get_prefactor(gt,ord)<<std::endl;
+int loop = gp.count_fermi_loops(gt);
+int bubble =gp.count_bubbles(gt);
+double power= (double) (ord+loop);
+ double prefactor1 = std::pow(-1,power);
+std::cout <<"my prefactor is " <<prefactor1<<std::endl;
+std::cout <<"number of loop is " << loop << " order is =" << ord << "\\     number of bubbles are " << gp.count_bubbles(gt)<< std::endl;
 
 
-
-
+*/
 
 
 

@@ -36,7 +36,7 @@ min_y = min(y for x, y in vertices)
 max_y = max(y for x, y in vertices)
 
 # Generate random points within the bounding box
-total_points = 10000000 # You can increase this number for better accuracy
+total_points = 100000# You can increase this number for better accuracy
 points_inside_hexagon = 0
 
 # Lists to store the x and y coordinates of the points inside and outside the hexagon

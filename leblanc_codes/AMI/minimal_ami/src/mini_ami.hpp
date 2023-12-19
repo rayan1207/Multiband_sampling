@@ -61,7 +61,7 @@ struct output_collector {
     std::vector<std::vector<int>> Uindex_vec;
 };
 struct params_param {
-	int  graph_type;
+	int  graph_type=0;
 	int  min_ord;		
 	int  max_ord;
     int molecular;
@@ -69,7 +69,7 @@ struct params_param {
     int lattice_type;
 	int molecular_type;
     double set_precision;
-    bool hatree_fock;
+    bool hatree_fock=true;
     double tp;
     double tperp;
 	double tperp_p;
@@ -85,8 +85,7 @@ struct params_param {
 	int mfreq_indp = 0;
 	int G_FUNC=0;
 };
-
-
+double Trilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
 double Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
 void assign_label(AmiGraph::graph_t &g1, AmiGraph::edge_vector_t edge,vector<int> vector);
 std::vector<std::vector<int>>  findmatch(std::vector<int> v1,AmiGraph::edge_vector_t &inter_vec);
@@ -105,8 +104,8 @@ void find_interaction(AmiGraph::graph_t &graph, AmiGraph::edge_vector_t &b_vecto
 void print_interactions(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t b_vector, std::vector<AmiGraph::edge_vector_t> f_vector);
 void  generate_eps_alpha(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge, std::vector<std::vector<int>> &ept, 
 std::vector<std::vector<int>>  &alpha);
-
-
+void check_iso_pp(AmiGraph::graph_t g, AmiGraph::gg_matrix_t ggm, int min_ord, int max_ord);
+void check_iso_sigma(AmiGraph::graph_t g, AmiGraph::gg_matrix_t ggm, int min_ord, int max_ord);
 //std::vector<int>  interaction_index(std::vector<std::vector<int>> int_species);
 std::vector<int> interaction_index(const std::vector<std::vector<int>>& int_species);
 

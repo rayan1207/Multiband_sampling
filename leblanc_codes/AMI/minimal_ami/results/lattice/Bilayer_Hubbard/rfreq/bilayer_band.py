@@ -75,7 +75,7 @@ def makegrid(data,tp,tpp):
 
 
 
-print(omega[:,32])
+print(omega)
 
 
 tp33_v15=makegrid(tp33_v15,-0.5,-0.3)
