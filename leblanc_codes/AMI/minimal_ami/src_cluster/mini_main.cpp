@@ -323,7 +323,13 @@ outputFile.open("output_2.txt");
 else if (params.lattice_type==3){
 outputFile.open("output_3.txt");
 	
-}	// Open the result file for writing
+}
+else if (params.lattice_type==4){
+outputFile.open("output_4.txt");
+
+}
+
+// Open the result file for writing
 
     if (outputFile.is_open()) {
         std::cout << "Number of processes: " << numProcesses << std::endl;
@@ -385,7 +391,7 @@ std::cout << "lattice_type: " << params.lattice_type << std::endl;
 std::cout << "set_precision: " << params.set_precision << std::endl;
 std::cout << "hatree_fock: " << std::boolalpha << params.hatree_fock << std::endl;
 std::cout << "tp: " << params.tp << std::endl;
-std::cout << "tperp_p: " << params.tperp_p << std::endl;
+std::cout << "tpp: " << params.tpp << std::endl;
 std::cout << "tperp: " << params.tperp << std::endl;
 std::cout << "Mc_num" << params.MC_num << std::endl;
 std::cout << "max: " << params.max_ord << std::endl;
@@ -393,7 +399,7 @@ std::cout << "min_ord" << params.min_ord << std::endl;
 std::cout << "line1 " << params.in<<" " <<params.out<< std::endl;
 std::cout << "V " << params.V<<" "  <<std::endl;
 std::cout << "time" << params.time<<" " << std::endl;
-
+std::cout << "G_FUNC " << params.G_FUNC<<" " << std::endl;
 std::cout << "Global Total Sample Count: " << globalTotalSampleCount << std::endl;
 std::cout << "sample per process: " << samplesPerProcess<< std::endl;
 	}
@@ -466,10 +472,10 @@ std::vector<int> line = {params.in,params.out};
 					else{
 					std::string filename;
                     if (params.molecular_type==1){
-                    filename = "h2_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h2/h2_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					else if (params.molecular_type==2){
-                    filename = "h10_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h10/h10_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					mb.molecular_solver_ext(ggm[i][j].graph_vec[k], output_collector, Beta_ext_vec, Mfreq_ext_vec,line,filename);	
 					}

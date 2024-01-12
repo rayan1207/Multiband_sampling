@@ -69,17 +69,17 @@ struct params_param {
     int lattice_type;
 	int molecular_type;
     double set_precision;
-    bool hatree_fock;
+    bool hatree_fock=true;
     double tp=0;
     double tperp=0;
-	double tperp_p=0;
+	double tpp=0;
 	int MC_num;
 	int in;
 	int out;
 	double molec_beta=50;
 	int molec_mfreq=100;
 	int time;
-	double V;
+	double V=0;
 	std::string graph;
 	double cutoff_value=1e8;
 	int mfreq_indp = 0;
@@ -160,13 +160,17 @@ void solve_pp_ord3(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_e
 void solve_pp_ord4(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex);
 void solve_pp_ord(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex);
 void pp_sampler( AmiGraph::graph_t &graph, mband::sampler_collector& collector,std::vector<int> &bandindex);
-double gfunc_pp(std::vector<double> momenta, params_param &param);
+std::complex<double> gfunc_pp(std::vector<double> momenta, params_param &param);
 
 std::tuple<std::complex<double>, std::complex<double>, int> lcalc_sampled_pp(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &Utype,
  std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param);
+/////////////////triangular///////////////
 
- 
+double Triangular_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
+std::pair<double, double> generate_hex_bz(); 
 };
+ 
+
 /// A few simple functions
 template<typename T>
 inline void print2d( std::vector< std::vector<T>> vec)

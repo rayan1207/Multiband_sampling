@@ -143,10 +143,10 @@ double mband::Umatch(const std::vector<std::vector<int>>& int_matrix, const std:
 
 double mband::Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
 	if (species ==1){
-		return -2*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-0.0*ext.H_-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+		return -2*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
 	}
 	if (species ==2){
-		return -2*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()+0.0*ext.H_-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+		return -2*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
 	}
 	else{
 		std::cerr<<" Species numer should be 1 or 2 for hubbard problem"<< std::endl;
@@ -176,33 +176,31 @@ double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double
 }
 */
 double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
-	if (species ==1){
-		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+	if (species ==1 || species ==2){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) - param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);	
 	}
-	if (species ==2){
-		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+	
+	if (species ==3 || species ==4 ){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) + param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);
 	}
-	if (species ==3){
-		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
-	}
-	if (species ==4){
-		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
-	}
+
 	else{
-		std::cerr<<" Species numer should be 1,2,3 and 4 for bi-layer hubbard problem"<< std::endl;
+		std::cerr<<" Species numer should be 1-4 for Bi-layer hubbard problem"<< std::endl;
 		return 0.0;
 	}
+
+	
 
 }
 double mband::Trilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
 	if (species ==1 || species ==2){
-		return -2*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) + std::sqrt(2)*param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);	
 	}
 	if (species ==3 || species ==4){
-		return -2*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));	
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1]));	
 	}
 	if (species ==5 || species ==6 ){
-		return -2*(std::cos(momenta[0]) + std::cos(momenta[1]))+ext.H_ -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]));
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) - std::sqrt(2)*param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);
 	}
 
 	else{
@@ -212,7 +210,117 @@ double mband::Trilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<doubl
 
 }
 
+double mband::Triangular_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
+		if (species ==1){
+		return -2*(std::cos(momenta[1]) + 2*std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2) ) -ext.MU_.real()-ext.H_-2*param.tp*(std::cos(std::sqrt(3)*momenta[0])+ 2*cos(std::sqrt(3)*momenta[0]/2)*std::cos(3*momenta[1]/2));	
+	}
+	if (species ==2){
+		return -2*(std::cos(momenta[1]) + 2*std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2) ) -ext.MU_.real()+ext.H_-2*param.tp*(std::cos(std::sqrt(3)*momenta[0])+ 2*cos(std::sqrt(3)*momenta[0]/2)*std::cos(3*momenta[1]/2));
+	}
+	else{
+		std::cerr<<" Species numer should be 1 or 2 for triangular hubbard problem"<< std::endl;
+		return 0.0;
+	}
 
+}
+std::complex<double> mband::gfunc_pp(std::vector<double> momenta, params_param &param){
+	if (param.lattice_type != 5 && param.lattice_type != 6){
+		//std::cout <<" Generating it for square lattice\n";
+	if (param.G_FUNC == 0){	
+		return std::complex<double>(1,0);
+		
+	}
+	else if (param.G_FUNC == 1){	
+		return std::complex<double>(std::cos(momenta[0]) + std::cos(momenta[1]),0);	
+	}
+	else if (param.G_FUNC == 2){	
+		return std::complex<double>(std::sin(momenta[0])* std::sin(momenta[1]),0);	
+	}
+	else if (param.G_FUNC == 3){	
+		return std::complex<double>(std::cos(momenta[0])- std::cos(momenta[1]),0);	
+	}
+	else{
+		std::cerr <<" Invalid G_FUNC values"<<std::endl;
+		return std::complex<double>(1,0);
+		
+		}
+	}
+	else {
+		//std::cout <<"Applying symmetry factor for triangular lattice";
+		
+		if (param.G_FUNC == 0){	
+		return std::complex<double>(1,0);	
+	}
+	if (param.G_FUNC == 1){	
+	    double Setd =  (std::cos(momenta[1]) + 2*std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2) );
+		return std::complex<double>(Setd,0);
+		
+	}
+	if (param.G_FUNC == 2){	
+	    double p1 =  std::sqrt(3)*std::sin(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
+		double p2 =  std::sin(momenta[1])+std::cos(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
+		return std::complex<double>(p1,0);	
+	}
+	if (param.G_FUNC == 3){	
+	    double p1 =  std::sqrt(3)*std::sin(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
+		double p2 =  std::sin(momenta[1])+std::cos(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
+		return std::complex<double>(p2,0);	
+	}
+	if (param.G_FUNC == 23){	
+	    double p1 =  std::sqrt(3)*std::sin(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
+		double p2 =  std::sin(momenta[1])+std::cos(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
+		return std::complex<double>(p1,p2)/std::sqrt(2);	
+	}
+	if (param.G_FUNC == 4){	
+	    double dx2y2 =  std::cos(momenta[1]) -std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2);
+		double dxy =  std::sqrt(3)*std::sin(momenta[1]/2)*std::sin(std::sqrt(3)*momenta[0]/2);
+		return std::complex<double>(dx2y2,0);	
+	}
+	if (param.G_FUNC == 5){	
+	    double dx2y2 =  std::cos(momenta[1]) -std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2);
+		double dxy =  std::sqrt(3)*std::sin(momenta[1]/2)*std::sin(std::sqrt(3)*momenta[0]/2);
+		return std::complex<double>(dxy,0);	
+	}
+	if (param.G_FUNC == 45){	
+	    double dx2y2 =  std::cos(momenta[1]) -std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2);
+		double dxy =  std::sqrt(3)*std::sin(momenta[1]/2)*std::sin(std::sqrt(3)*momenta[0]/2);
+		return std::complex<double>(dx2y2,dxy)/std::sqrt(2);	
+	}
+	if (param.G_FUNC==6){
+		double f = std::sin(momenta[1]/2)*(std::cos(std::sqrt(3)*momenta[0]/2)-std::cos(momenta[1]/2));
+		return std::complex<double>(f,0);		
+		}
+	else{
+		std::cerr <<" Invalid G_FUNC values"<<std::endl;
+		return std::complex<double>(1,0);
+		
+		}
+	}
+	
+}
+
+std::pair<double, double> mband::generate_hex_bz() {
+    std::random_device rd;
+    std::default_random_engine engine(rd());
+    std::uniform_real_distribution<double> distribution_y(-4 * M_PI / 3, 4 * M_PI / 3);
+    std::uniform_real_distribution<double> distribution_x(-2 * M_PI / std::sqrt(3), 2 * M_PI / std::sqrt(3));
+    double x;
+    double y;
+    bool found = false;
+    double comp = 2 * M_PI / std::sqrt(3);
+ 
+    do {
+        x = distribution_x(engine);
+        y = distribution_y(engine);
+
+        if (std::fabs(y) < 2 * M_PI / 3 || (std::fabs(x) + std::sqrt(3) * (std::fabs(y) - 2 * M_PI / 3)) < comp) {
+            found = true;
+        }
+
+    } while (!found);
+
+    return std::make_pair(x, y);
+}
 
 double mband::non_local_U_formfactor(std::vector<double> vq) {
     return 2 * std::cos(vq[0]) + 2 * std::cos(vq[1]);
@@ -276,28 +384,7 @@ std::vector<int>  mband::interaction_index(const  std::vector<std::vector<int>>&
 }
 
 
-double mband::gfunc_pp(std::vector<double> momenta, params_param &param){
-	if (param.G_FUNC == 0){
-		
-		return 1;
-		
-	}
-	else if (param.G_FUNC == 1){	
-		return std::cos(momenta[0]) + std::cos(momenta[1]);	
-	}
-	else if (param.G_FUNC == 2){	
-		return std::sin(momenta[0])* std::sin(momenta[1]);	
-	}
-	else if (param.G_FUNC == 3){	
-		return std::cos(momenta[0])- std::cos(momenta[1]);	
-	}
-	else{
-		std::cerr <<" Invalid G_FUNC values"<<std::endl;
-		return 1;
-		
-	}
-	
-}
+
 
 bool mband::check_mfreq_independent(const std::vector<AmiBase::alpha_t>& matrix) {
     for (const auto& row : matrix) {
@@ -382,8 +469,8 @@ void params_loader(const std::string& filename, mband::params_param& params) {
             params.tp = std::stod(paramValue);
         else if (paramName == "tperp")
             params.tperp = std::stod(paramValue);
-		 else if (paramName == "tperp_p")
-            params.tperp_p = std::stod(paramValue);
+		 else if (paramName == "tpp")
+            params.tpp = std::stod(paramValue);
 		 else if (paramName == "molecular_type")
             params.molecular_type = std::stoi(paramValue);
 		 else if (paramName == "max_ord")

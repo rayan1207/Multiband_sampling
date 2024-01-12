@@ -659,9 +659,19 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
         std::vector<std::vector<double>> momenta;
         momenta.reserve(kspace);
         for (int j = 0; j < kspace; j++) {
+		if (param.lattice_type != 5 && param.lattice_type !=6){
             double momentum1 = 2 * M_PI * distribution(engine);
             double momentum2 = 2 * M_PI * distribution(engine);
             momenta.push_back({momentum1, momentum2});
+		}
+		else {
+			//std::cout<<"Generating momenta for Hexagon \n";
+			std::pair<double,double> ks =  mband::generate_hex_bz();
+			double momentum1 = ks.first;
+            double momentum2 = ks.second ;
+            momenta.push_back({momentum1, momentum2});
+			
+			}
         }
         momenta.push_back(ext_params.external_k_list_[0]);
 
@@ -681,7 +691,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 
     
 
-	if (param.lattice_type ==2 || param.lattice_type==3){		
+	if (param.lattice_type ==2 || param.lattice_type==3 ||param.lattice_type==4 || param.lattice_type==6  ){		
 		std::vector<std::vector<double>> V_momenta;
 		V_momenta.reserve(bosonic_Alpha.size());
 
@@ -693,6 +703,14 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 				qy += static_cast<double>(b_alpha[j]) * momenta[j][1];
 			}
 		   V_momenta.push_back({ qx, qy });
+		}
+		if (param.lattice_type==2){
+			for (int i =0;i<Utype.size();i++){
+				if (Utype[i]>11 && Utype[i]<16){
+				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+				}
+				
+			}	
 		}
 
 		if (param.lattice_type ==3){
@@ -706,17 +724,30 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 				}	
 			}
 		}
-		else if (param.lattice_type==2){
-			for (int i =0;i<Utype.size();i++){
-				if (Utype[i]>11 && Utype[i]<16){
-				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
-				}
-				
+	
+		if (param.lattice_type==4){
+                        for (int i =0;i<Utype.size();i++){
+                                if (Utype[i]>21 && Utype[i]<30){
+                                form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+                                }
+                        }
+                }
+		
+		if (param.lattice_type ==6){
+			for (int i = 0; i<Utype.size();i++){
+				if (Utype[i]==0 || Utype[i]==1){
+				form_factor= form_factor*2*param.V*(std::cos(V_momenta[i][1]) + 2*std::cos(V_momenta[i][1]/2)*std::cos(std::sqrt(3)*V_momenta[i][0]/2) );
+						}
+				else {
+				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][1]) + 2*std::cos(V_momenta[i][1]/2)*std::cos(std::sqrt(3)*V_momenta[i][0]/2)));	
+	
+				}	
 			}
-			
-		}
+		}		
+		
 	}
-	double gk=1;
+	////////////////////////////Applying symmetry factors here/////////////////////////////////
+	std::complex<double> gk(1,0);
 	
 	if (param.G_FUNC > 0){		
 		std::vector<std::vector<double>> V1_momenta;
@@ -738,12 +769,14 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		*/
 		
 		for (int i = 0; i<gkkp_Alpha.size();i++){
-			double g1= mband::gfunc_pp(V1_momenta[i],param);
+			std::complex<double> g1= mband::gfunc_pp(V1_momenta[i],param);
+		
+			if (i ==1){g1 = std::conj(g1);}
 			gk = gk*g1;
-			
-		}
-
+	
+        }
 	}
+	
 		
 
 	/////////////////////////////////energy/////////////////////////////	
@@ -755,6 +788,13 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
             }
 			if (param.lattice_type == 2 ) {
                 energy.push_back(mband::Bilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            
+	   }
+			if (param.lattice_type == 4 ) {
+                energy.push_back(mband::Trilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
+			if (param.lattice_type == 5 || param.lattice_type == 6 ) {
+                energy.push_back(mband::Triangular_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
             }
         }
 

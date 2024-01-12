@@ -76,7 +76,7 @@ AmiGraph g(AmiBase::Sigma, 0);
 					AmiBase::P_t P_array;
 					AmiBase::R_t R_array;
 					AmiBase::g_prod_t R0 =gs_vec;
-					//ami.precision_cutoff=0;
+					ami.precision_cutoff=0;
 					ami.drop_bosonic_diverge =true;
 					ami.drop_matsubara_poles = false;
 					ami.construct(test_amiparms , R0 , R_array , P_array , S_array ); 
@@ -556,13 +556,22 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	
 	
     // Generate random samples and calculate the sum
-    for (int i = 0; i < MC_num; i++) {
+       for (int i = 0; i < MC_num; i++) {
         std::vector<std::vector<double>> momenta;
         momenta.reserve(kspace);
         for (int j = 0; j < kspace; j++) {
+            if (param.lattice_type != 5 && param.lattice_type !=6){
             double momentum1 = 2 * M_PI * distribution(engine);
             double momentum2 = 2 * M_PI * distribution(engine);
             momenta.push_back({momentum1, momentum2});
+			}
+		else {
+			std::pair<double,double> ks =  mband::generate_hex_bz();
+			double momentum1 = ks.first;
+            double momentum2 = ks.second ;
+            momenta.push_back({momentum1, momentum2});
+			
+			}
         }
         momenta.push_back(ext_params.external_k_list_[0]);
 
@@ -583,30 +592,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	//print2d(summed_momenta);
     
 	/////////////////////////form factor for exteded hubbard////////////////////
-    /*
-	if (param.lattice_type ==3){		
-			std::vector<std::vector<int>> nonlocal_alpha= mband::find_non_local_bosonic_alpha(bosonic_Alpha, Utype);
-			std::vector<std::vector<double>> V_momenta;
-			V_momenta.reserve(nonlocal_alpha.size());
-        if (!nonlocal_alpha.empty()){
-			for (const auto& b_alpha : nonlocal_alpha) {
-				double qx = 0;
-				double qy = 0;
-				for (int j = 0; j < b_alpha.size(); j++) {
-					qx += static_cast<double>(b_alpha[j]) * momenta[j][0];
-					qy += static_cast<double>(b_alpha[j]) * momenta[j][1];
-				}
-			   V_momenta.push_back({ qx, qy });
-			}
-
-		    
-			for (auto vq : V_momenta) {
-				form_factor = form_factor*mband::non_local_U_formfactor(vq);
-				}	
-		}		
-	}
-	*/
-	if (param.lattice_type ==3 || param.lattice_type ==2 ){		
+    if (param.lattice_type ==2 || param.lattice_type ==3 ||  param.lattice_type ==4 ||param.lattice_type ==6 ){		
 		std::vector<std::vector<double>> V_momenta;
 		V_momenta.reserve(bosonic_Alpha.size());
 
@@ -619,6 +605,15 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			}
 		   V_momenta.push_back({ qx, qy });
 		}
+		if (param.lattice_type ==2){
+			for (int i =0;i<Utype.size();i++){
+				if (Utype[i]>11 && Utype[i]<16){
+					form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+				}
+				
+			}
+		}
+		
         if (param.lattice_type==3){
 		for (int i = 0; i<Utype.size();i++){
 			if (Utype[i]==0 || Utype[i]==1){
@@ -630,26 +625,44 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 				}	
 			}
 		}
-		else if (param.lattice_type ==2){
-			for (int i =0;i<Utype.size();i++){
-				if (Utype[i]>11 && Utype[i]<16){
-					form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
-				}
-				
+		if (param.lattice_type==4){
+                        for (int i =0;i<Utype.size();i++){
+                                if (Utype[i]>21 && Utype[i]<30){
+                                form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+                                }
+                        }
+                }
+		if (param.lattice_type ==6){
+			for (int i = 0; i<Utype.size();i++){
+				if (Utype[i]==0 || Utype[i]==1){
+				form_factor= form_factor*2*param.V*(std::cos(V_momenta[i][1]) + 2*std::cos(V_momenta[i][1]/2)*std::cos(std::sqrt(3)*V_momenta[i][0]/2) );
+						}
+				else {
+				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][1]) + 2*std::cos(V_momenta[i][1]/2)*std::cos(std::sqrt(3)*V_momenta[i][0]/2)));	
+	
+				}	
 			}
 		}
+		
 	}
+	
 		
 
 	/////////////////////////////////energy/////////////////////////////	
         std::vector<double> energy;
         energy.reserve(summed_momenta.size());
         for (int i = 0; i < summed_momenta.size(); i++) {
-            if (param.lattice_type == 1 || param.lattice_type == 3 ) {
+         if (param.lattice_type == 1 || param.lattice_type == 3 ) {
                 energy.push_back(mband::Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
             }
-			if (param.lattice_type == 2 ) {
+		if (param.lattice_type == 2 ) {
                 energy.push_back(mband::Bilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
+	    if (param.lattice_type == 4 ) {
+                energy.push_back(mband::Trilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
+		if (param.lattice_type == 5 || param.lattice_type == 6 ) {
+                energy.push_back(mband::Triangular_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
             }
         }
 
