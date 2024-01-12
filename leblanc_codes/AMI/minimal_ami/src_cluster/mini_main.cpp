@@ -29,7 +29,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
 MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
 
-if (params.molecular==0&& params.lattice_type == 1){
+if (params.molecular==0&& (params.lattice_type == 1 || params.lattice_type == 5){
     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/Hubbard_U.txt");
 	interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/Hubbard_U.txt",5);
 	 band_energy = {0,0};
@@ -58,7 +58,7 @@ for(int i=0; i<extern_list.size();i++){
 }
 
 
-else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type ==4) ){
+else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type ==4   ) ){
 	 if (params.lattice_type==2){
      interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/bilayer_interaction.txt");
 	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/loader/bilayer_interaction.txt",5);
@@ -94,7 +94,7 @@ else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type =
 
   }
   
-  else if (params.molecular==0&& params.lattice_type ==3){
+  else if (params.molecular==0&& (params.lattice_type ==3 ||params.lattice_type ==6) ){
     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/extended_U.txt");
 	interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/extended_U.txt",5);
     band_energy = {0,0};
