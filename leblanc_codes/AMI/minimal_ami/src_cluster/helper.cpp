@@ -177,11 +177,11 @@ double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double
 */
 double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
 	if (species ==1 || species ==2){
-		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) - param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);	
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) -param.tbs- param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);	
 	}
 	
 	if (species ==3 || species ==4 ){
-		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) + param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) +param.tbs+ param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);
 	}
 
 	else{
@@ -194,13 +194,13 @@ double mband::Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double
 }
 double mband::Trilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
 	if (species ==1 || species ==2){
-		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) + std::sqrt(2)*param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);	
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) - std::sqrt(2)*(param.tbs+param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2));	
 	}
 	if (species ==3 || species ==4){
 		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1]));	
 	}
 	if (species ==5 || species ==6 ){
-		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) - std::sqrt(2)*param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2);
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) + std::sqrt(2)*(param.tbs+param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2));
 	}
 
 	else{
@@ -223,7 +223,11 @@ double mband::Triangular_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<dou
 	}
 
 }
-std::complex<double> mband::gfunc_pp(std::vector<double> momenta, params_param &param){
+std::complex<double> mband::gfunc_pp(std::vector<double> momenta, params_param &param,int bandindex){
+	double kz=0;
+	if (param.lattice_type ==2 && (bandindex ==3 || bandindex ==4))  {
+		kz= M_PI;
+	}
 	if (param.lattice_type != 5 && param.lattice_type != 6){
 		//std::cout <<" Generating it for square lattice\n";
 	if (param.G_FUNC == 0){	
@@ -233,12 +237,26 @@ std::complex<double> mband::gfunc_pp(std::vector<double> momenta, params_param &
 	else if (param.G_FUNC == 1){	
 		return std::complex<double>(std::cos(momenta[0]) + std::cos(momenta[1]),0);	
 	}
-	else if (param.G_FUNC == 2){	
+	else if (param.G_FUNC == 4){	
 		return std::complex<double>(std::sin(momenta[0])* std::sin(momenta[1]),0);	
 	}
 	else if (param.G_FUNC == 3){	
 		return std::complex<double>(std::cos(momenta[0])- std::cos(momenta[1]),0);	
 	}
+	else if (param.G_FUNC == 2){
+                return std::complex<double>(std::sqrt(2)*std::sin(momenta[0]),0);
+        }
+	 else if (param.G_FUNC == 5){
+                return std::complex<double>((std::sin(momenta[0])* std::sin(momenta[1]))*(std::cos(momenta[0])- std::cos(momenta[1])),0);
+        }
+	else if (param.G_FUNC == 6){
+		 //std::cout <<"value of kz used is " << kz <<" \n";
+		 return std::complex<double>(std::cos(kz)- std::cos(momenta[0]),0);
+	   }
+	 else if (param.G_FUNC == 7){
+		 //std::cout <<"value of kz used is " << kz <<" \n";
+		 return std::complex<double>(std::cos(kz) + std::cos(momenta[0]),0);
+	   }
 	else{
 		std::cerr <<" Invalid G_FUNC values"<<std::endl;
 		return std::complex<double>(1,0);
@@ -251,42 +269,42 @@ std::complex<double> mband::gfunc_pp(std::vector<double> momenta, params_param &
 		if (param.G_FUNC == 0){	
 		return std::complex<double>(1,0);	
 	}
-	if (param.G_FUNC == 1){	
+	else if (param.G_FUNC == 1){	
 	    double Setd =  (std::cos(momenta[1]) + 2*std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2) );
 		return std::complex<double>(Setd,0);
 		
 	}
-	if (param.G_FUNC == 2){	
-	    double p1 =  std::sqrt(3)*std::sin(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
+	else if (param.G_FUNC == 2){	
+	    double p1 =  std::sqrt(3)*std::sin(std::sqrt(3)*momenta[0]/2)*std::cos(momenta[1]/2);
 		double p2 =  std::sin(momenta[1])+std::cos(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
 		return std::complex<double>(p1,0);	
 	}
-	if (param.G_FUNC == 3){	
-	    double p1 =  std::sqrt(3)*std::sin(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
+	else if (param.G_FUNC == 3){	
+	    double p1 =  std::sqrt(3)*std::sin(std::sqrt(3)*momenta[0]/2)*std::cos(momenta[1]/2);
 		double p2 =  std::sin(momenta[1])+std::cos(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
 		return std::complex<double>(p2,0);	
 	}
-	if (param.G_FUNC == 23){	
-	    double p1 =  std::sqrt(3)*std::sin(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
+	else if (param.G_FUNC == 23){	
+	    double p1 =  std::sqrt(3)*std::sin(std::sqrt(3)*momenta[0]/2)*std::cos(momenta[1]/2);
 		double p2 =  std::sin(momenta[1])+std::cos(std::sqrt(3)*momenta[0]/2)*std::sin(momenta[1]/2);
 		return std::complex<double>(p1,p2)/std::sqrt(2);	
 	}
-	if (param.G_FUNC == 4){	
+	else if (param.G_FUNC == 4){	
 	    double dx2y2 =  std::cos(momenta[1]) -std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2);
 		double dxy =  std::sqrt(3)*std::sin(momenta[1]/2)*std::sin(std::sqrt(3)*momenta[0]/2);
 		return std::complex<double>(dx2y2,0);	
 	}
-	if (param.G_FUNC == 5){	
+	else if (param.G_FUNC == 5){	
 	    double dx2y2 =  std::cos(momenta[1]) -std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2);
 		double dxy =  std::sqrt(3)*std::sin(momenta[1]/2)*std::sin(std::sqrt(3)*momenta[0]/2);
 		return std::complex<double>(dxy,0);	
 	}
-	if (param.G_FUNC == 45){	
+	else if (param.G_FUNC == 45){	
 	    double dx2y2 =  std::cos(momenta[1]) -std::cos(momenta[1]/2)*std::cos(std::sqrt(3)*momenta[0]/2);
 		double dxy =  std::sqrt(3)*std::sin(momenta[1]/2)*std::sin(std::sqrt(3)*momenta[0]/2);
 		return std::complex<double>(dx2y2,dxy)/std::sqrt(2);	
 	}
-	if (param.G_FUNC==6){
+	else if (param.G_FUNC==6){
 		double f = std::sin(momenta[1]/2)*(std::cos(std::sqrt(3)*momenta[0]/2)-std::cos(momenta[1]/2));
 		return std::complex<double>(f,0);		
 		}
@@ -471,6 +489,8 @@ void params_loader(const std::string& filename, mband::params_param& params) {
             params.tperp = std::stod(paramValue);
 		 else if (paramName == "tpp")
             params.tpp = std::stod(paramValue);
+	      else if (paramName == "tbs")
+            params.tbs = std::stod(paramValue);
 		 else if (paramName == "molecular_type")
             params.molecular_type = std::stoi(paramValue);
 		 else if (paramName == "max_ord")

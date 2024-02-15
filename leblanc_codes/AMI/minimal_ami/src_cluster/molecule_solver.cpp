@@ -643,6 +643,17 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 				}	
 			}
 		}
+		if (param.lattice_type ==7){
+			for (int i = 0; i<Utype.size();i++){
+				if (Utype[i] <= 5){
+				form_factor= form_factor*( 2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
+																											4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));}
+				else if(Utype[i] >=6 && Utype[i]<=11)  {
+				form_factor= form_factor*(1.0+  2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
+										4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));	
+				}	
+			}
+		}
 		
 	}
 	
@@ -664,6 +675,10 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		if (param.lattice_type == 5 || param.lattice_type == 6 ) {
                 energy.push_back(mband::Triangular_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
             }
+		if (param.lattice_type == 7 ) {
+                energy.push_back(mband::SRO_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
+		
         }
 
         std::vector<std::complex<double>> energy_t = mband::generate_ept(Epsilon, energy);
@@ -686,7 +701,21 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		}
 	*/
 		
-	if (ami.overflow_detected) {
+	
+
+ if (std::isnan(raw_coeff.real()) || std::isnan(raw_coeff.imag()) ||
+        std::isinf(raw_coeff.real()) || std::isinf(raw_coeff.imag())) {
+        std::cout << "Result is NaN or infinity, dropping the result." << std::endl;
+        std::cout<<"result is " <<raw_coeff<<std::endl;
+                cutoff_num++;
+    }
+        else if ((abs(raw_coeff.real()) > param.cutoff_value || abs(raw_coeff.imag()) > param.cutoff_value) && ord>2){
+                std::cout << "Large value detected." << std::endl;
+        std::cout<<"result is " <<raw_coeff<<std::endl;
+                cutoff_num++;
+
+        }
+	else if (ami.overflow_detected) {
 			std::cout<<"over flow detected \n ";
 			std::cout<<"result is " <<raw_coeff<<std::endl;
 			cutoff_num++;     		

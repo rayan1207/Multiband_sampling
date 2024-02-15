@@ -29,7 +29,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
 MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
 
-if (params.molecular==0&& (params.lattice_type == 1 || params.lattice_type == 5){
+if (params.molecular==0&& (params.lattice_type == 1 || params.lattice_type == 5)){
     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/Hubbard_U.txt");
 	interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/Hubbard_U.txt",5);
 	 band_energy = {0,0};
@@ -58,7 +58,7 @@ for(int i=0; i<extern_list.size();i++){
 }
 
 
-else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type ==4   ) ){
+else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type ==4 ||params.lattice_type ==7 ) ){
 	 if (params.lattice_type==2){
      interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/bilayer_interaction.txt");
 	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/loader/bilayer_interaction.txt",5);
@@ -67,6 +67,10 @@ else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type =
      interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/trilayer_interaction.txt");
 	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/loader/trilayer_interaction.txt",5);
      }
+	 else if (params.lattice_type==7){
+		 interaction = readFile("../loader/SRO_interaction.txt");
+		 interaction_value = readFile1("../loader/SRO_interaction.txt",5);	 
+	}
 	 
 	 band_energy = {0,0};
 
@@ -328,6 +332,18 @@ else if (params.lattice_type==4){
 outputFile.open("output_4.txt");
 
 }
+else if (params.lattice_type==5 ){
+outputFile.open("output_5.txt");
+
+}
+else if (params.lattice_type==6){
+outputFile.open("output_6.txt");
+
+}
+else if (params.lattice_type==7){
+outputFile.open("output_7.txt");
+
+}
 
 // Open the result file for writing
 
@@ -393,6 +409,7 @@ std::cout << "hatree_fock: " << std::boolalpha << params.hatree_fock << std::end
 std::cout << "tp: " << params.tp << std::endl;
 std::cout << "tpp: " << params.tpp << std::endl;
 std::cout << "tperp: " << params.tperp << std::endl;
+std::cout << "tbs: " << params.tbs << std::endl;
 std::cout << "Mc_num" << params.MC_num << std::endl;
 std::cout << "max: " << params.max_ord << std::endl;
 std::cout << "min_ord" << params.min_ord << std::endl;

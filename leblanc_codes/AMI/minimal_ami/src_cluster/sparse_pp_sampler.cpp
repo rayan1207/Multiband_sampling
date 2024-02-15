@@ -600,7 +600,7 @@ void mband::pp_sampler( AmiGraph::graph_t &graph, mband::sampler_collector& coll
 
 std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled_pp(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &Utype,
  std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param) {
-	int cutoff_num = 0;
+    int cutoff_num = 0;
     AmiBase ami;
     int ord = gp.graph_order(gself);
 	double prefactor = gp.get_prefactor(gself,ord);
@@ -611,7 +611,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
     AmiBase::g_struct gs[n];
     std::vector<AmiBase::g_struct> gs_vec;
 	
-
+	std::vector<int> gg_type = {param.in%10, param.out%10};
     for (int i = 0; i < n; i++) {
         gs[i] = {Epsilon[i], Alpha[i]};
         gs_vec.push_back(gs[i]);
@@ -743,7 +743,19 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	
 				}	
 			}
-		}		
+		}
+		if (param.lattice_type ==7){
+			for (int i = 0; i<Utype.size();i++){
+				if (Utype[i] <= 5){
+				form_factor= form_factor*( 2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
+																		4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));
+						}
+				else if(Utype[i] >=6 && Utype[i]<=11)  {
+				form_factor= form_factor*(1.0+  2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
+																						4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));	
+				}	
+			}
+		}
 		
 	}
 	////////////////////////////Applying symmetry factors here/////////////////////////////////
@@ -769,7 +781,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		*/
 		
 		for (int i = 0; i<gkkp_Alpha.size();i++){
-			std::complex<double> g1= mband::gfunc_pp(V1_momenta[i],param);
+			std::complex<double> g1= mband::gfunc_pp(V1_momenta[i],param,gg_type[i]);
 		
 			if (i ==1){g1 = std::conj(g1);}
 			gk = gk*g1;
@@ -796,6 +808,9 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			if (param.lattice_type == 5 || param.lattice_type == 6 ) {
                 energy.push_back(mband::Triangular_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
             }
+			if (param.lattice_type == 7 ) {	
+                energy.push_back(mband::SRO_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
         }
 
         std::vector<std::complex<double>> energy_t = mband::generate_ept(Epsilon, energy);
@@ -806,12 +821,28 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		std::complex<double> result =form_factor*gk* prefactor *raw_coeff;
 
 		
-	if (ami.overflow_detected) {
+	
+       	if (std::isnan(raw_coeff.real()) || std::isnan(raw_coeff.imag()) ||
+        std::isinf(raw_coeff.real()) || std::isinf(raw_coeff.imag())) {
+        std::cout << "Result is NaN or infinity, dropping the result." << std::endl;
+        std::cout<<"result is " <<raw_coeff<<std::endl;
+        cutoff_num++;
+
+    }
+    	else if ((abs(raw_coeff.real()) > param.cutoff_value || abs(raw_coeff.imag()) > param.cutoff_value) && ord>2){
+                std::cout << "Large value detected." << std::endl;
+        std::cout<<"result is " <<raw_coeff<<std::endl;
+                cutoff_num++;
+
+        }
+
+	else if (ami.overflow_detected) {
 			std::cout<<"over flow detected \n ";
 			std::cout<<"result is " <<raw_coeff<<std::endl;
 			cutoff_num++;     		
 		}
-	else{
+		
+    else{
         localSum +=  result;
         localSumOfSquares += std::complex<double> (std::pow(result.real(),2),std::pow(result.imag(),2)) ;
 		}
