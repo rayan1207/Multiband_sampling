@@ -223,11 +223,38 @@ double mband::Triangular_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<dou
 	}
 
 }
+double mband::Quadlayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param){
+	if (species ==1 || species ==2){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1])) -ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) - (std::sqrt(5)+1)*(param.tbs + param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2))/2;	
+	}
+	if (species ==3 || species ==4){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.imag()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1]))- (std::sqrt(5)-1)*(param.tbs + param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2))/2;	
+	}
+	if (species ==5 || species ==6 ){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) + (std::sqrt(5)-1)*(param.tbs + param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2))/2;
+	}
+	
+	if (species ==7 || species ==8 ){
+		return -2*(1)*(std::cos(momenta[0]) + std::cos(momenta[1]))-ext.MU_.real()-4*param.tp*(std::cos(momenta[0])*std::cos(momenta[1]))-2*(param.tpp)*(std::cos(2*momenta[0]) - std::cos(2*momenta[1])) + (std::sqrt(5)+1)*(param.tbs + param.tperp*std::pow((std::cos(momenta[0]) - std::cos(momenta[1])),2))/2;
+	}
+
+
+	else{
+		std::cerr<<" Species numer should be 1-8 for Quad-layer hubbard problem"<< std::endl;
+		return 0.0;
+	}
+}
 std::complex<double> mband::gfunc_pp(std::vector<double> momenta, params_param &param,int bandindex){
 	double kz=0;
 	if (param.lattice_type ==2 && (bandindex ==3 || bandindex ==4))  {
 		kz= M_PI;
 	}
+	if (param.lattice_type ==4 && (bandindex ==3 || bandindex ==4))  {
+                kz= M_PI/2;
+        }
+	if (param.lattice_type ==4 && (bandindex ==5 || bandindex ==6))  {
+                kz= M_PI;
+        }
 	if (param.lattice_type != 5 && param.lattice_type != 6){
 		//std::cout <<" Generating it for square lattice\n";
 	if (param.G_FUNC == 0){	
@@ -243,6 +270,9 @@ std::complex<double> mband::gfunc_pp(std::vector<double> momenta, params_param &
 	else if (param.G_FUNC == 3){	
 		return std::complex<double>(std::cos(momenta[0])- std::cos(momenta[1]),0);	
 	}
+	else if (param.G_FUNC == 30){
+                return std::complex<double>((std::cos(kz)+std::cos(momenta[0])- std::cos(momenta[1]))/std::sqrt(2),0);
+        }
 	else if (param.G_FUNC == 2){
                 return std::complex<double>(std::sqrt(2)*std::sin(momenta[0]),0);
         }
@@ -491,6 +521,11 @@ void params_loader(const std::string& filename, mband::params_param& params) {
             params.tpp = std::stod(paramValue);
 	      else if (paramName == "tbs")
             params.tbs = std::stod(paramValue);
+
+	     else if (paramName == "SOC")
+            params.SOC = std::stod(paramValue);
+	    else if (paramName == "t_orb")
+            params.t_orb = std::stod(paramValue);
 		 else if (paramName == "molecular_type")
             params.molecular_type = std::stoi(paramValue);
 		 else if (paramName == "max_ord")

@@ -579,7 +579,7 @@ mband::print_assigned_species(interaction_species);
 
 
 
-void mband:: solve_pp_ord(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex)
+void mband::solve_pp_ord(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex)
 {
 	int ord =  gp.graph_order(graph);
 	if (ord ==0)
@@ -626,6 +626,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
  std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param) {
 	int cutoff_num = 0;
     AmiBase ami;
+	std::vector<int> gg_type = {param.in%10, param.out%10};
     int ord = gp.graph_order(gself);
 	int loop = gp.count_fermi_loops(gself);
 	
@@ -687,9 +688,19 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
         std::vector<std::vector<double>> momenta;
         momenta.reserve(kspace);
         for (int j = 0; j < kspace; j++) {
+		if (param.lattice_type != 5 && param.lattice_type !=6){
             double momentum1 = 2 * M_PI * distribution(engine);
             double momentum2 = 2 * M_PI * distribution(engine);
             momenta.push_back({momentum1, momentum2});
+		}
+		else {
+			//std::cout<<"Generating momenta for Hexagon \n";
+			std::pair<double,double> ks =  mband::generate_hex_bz();
+			double momentum1 = ks.first;
+            double momentum2 = ks.second ;
+            momenta.push_back({momentum1, momentum2});
+			
+			}
         }
         momenta.push_back(ext_params.external_k_list_[0]);
 
@@ -709,7 +720,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 
     
 
-	if (param.lattice_type ==3 ||param.lattice_type ==2 ){		
+	if (param.lattice_type ==2 ||param.lattice_type ==3 || param.lattice_type ==4 || param.lattice_type ==6 ||param.lattice_type ==7 || param.lattice_type ==8  ){		
 		std::vector<std::vector<double>> V_momenta;
 		V_momenta.reserve(bosonic_Alpha.size());
 
@@ -722,19 +733,23 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			}
 		   V_momenta.push_back({ qx, qy });
 		}
+		if (param.lattice_type==4){
+                        for (int i =0;i<Utype.size();i++){
+                                if (Utype[i]>21 && Utype[i]<30){
+                                form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+                                }
+                        }
+                }
+		if (param.lattice_type==8){
+			//std::cout<< "triggering pair hopping for quad layer\n";
+                        for (int i =0;i<Utype.size();i++){
+                                if (Utype[i]>31 && Utype[i]<44){
+                                form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+                                }
+                        }
+                }
 
-        /*
-		for (int i = 0; i<Utype.size();i++){
-			if (Utype[i]==0 || Utype[i]==1){
-				form_factor= form_factor*2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1]));
-			}
-			else {
-				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));	
-	
-			}	
-		}
-		ext.MU_.real()+0.0*ext.H_
-		*/
+  
 		if (param.lattice_type ==3){
 			for (int i = 0; i<Utype.size();i++){
 				if (Utype[i]==0 || Utype[i]==1){
@@ -746,7 +761,18 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 				}	
 			}
 		}
-		else if (param.lattice_type==2){
+		if (param.lattice_type ==6){
+			for (int i = 0; i<Utype.size();i++){
+				if (Utype[i]==0 || Utype[i]==1){
+				form_factor= form_factor*2*param.V*(std::cos(V_momenta[i][1]) + 2*std::cos(V_momenta[i][1]/2)*std::cos(std::sqrt(3)*V_momenta[i][0]/2) );
+						}
+				else {
+				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][1]) + 2*std::cos(V_momenta[i][1]/2)*std::cos(std::sqrt(3)*V_momenta[i][0]/2)));	
+	
+				}	
+			}
+		}
+	    if (param.lattice_type==2){
 			for (int i =0;i<Utype.size();i++){
 				if (Utype[i]>11 && Utype[i]<16){
 				form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
@@ -755,8 +781,29 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			}
 			
 		}
+		if (param.lattice_type==7){
+			for (int i = 0; i<Utype.size();i++){
+				if (Utype[i] <= 5){
+			    //std::cout << " triggering extended result  with Utype " << Utype[i] << "with value " << ext_params.MU_.imag() << "and " <<ext_params.H_ <<"respectively" << std::endl;
+				form_factor= form_factor*( 2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
+				4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));
+						}
+				else if(Utype[i] >=6 && Utype[i]<=11)  {
+				//std::cout << " triggering extended result  with Utype " << Utype[i] << "with value " << ext_params.MU_.imag() << "and " <<ext_params.H_ <<"respectively" << std::endl;
+				form_factor= form_factor*(1.0+  2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
+				4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));	
+				}
+				else if(Utype[i] >=12 && Utype[i]<=35)  {
+				double D = 1-2*ext_params.MU_.real();
+				//std::cout << " triggering extended result  with Utype " << Utype[i] << "with value " << ext_params.MU_.imag() << "and " <<ext_params.H_ <<"respectively" << std::endl;
+				form_factor= form_factor*(D+  2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
+				4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));	
+				}	
+			}
+		}
+		
 	} 
-	double gk=1;
+	std::complex<double> gk(1,0);
 	
 	if (param.G_FUNC > 0){		
 		std::vector<std::vector<double>> V1_momenta;
@@ -778,11 +825,17 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		*/
 		
 		for (int i = 0; i<gkkp_Alpha.size();i++){
-			double g1= mband::gfunc_pp(V1_momenta[i],param);
-			gk = gk*g1;
+			std::complex<double> g1= mband::gfunc_pp(V1_momenta[i],param,gg_type[i]);
 			
-		}
-
+		
+			if (i ==1){
+				g1 = std::conj(g1);
+			}
+			
+			gk = gk*g1;
+			//std::cout<<gk;
+	
+        }
 	}
 		
 
@@ -799,6 +852,17 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			if (param.lattice_type == 4 ) {
                 energy.push_back(mband::Trilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
             }
+			if (param.lattice_type == 8 ) {
+				//std::cout<<"triggering quadlayer energy"<<std::endl;
+                energy.push_back(mband::Quadlayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
+			if (param.lattice_type == 5 || param.lattice_type == 6 ) {
+                energy.push_back(mband::Triangular_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
+			if (param.lattice_type == 7 ) {
+				//std::cout << "Using SRO energy";
+                energy.push_back(mband::SRO_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
         }
         std::vector<std::complex<double>> energy_t = mband::generate_ept(Epsilon, energy);
 
@@ -807,12 +871,24 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
         std::complex<double> raw_coeff = ami.evaluate(test_amiparms, R_array, P_array, S_array, external,unique, rref, eval_list);
 		std::complex<double> result =form_factor*gk* prefactor *raw_coeff;
 
+	if (std::isnan(raw_coeff.real()) || std::isnan(raw_coeff.imag()) ||
+        std::isinf(raw_coeff.real()) || std::isinf(raw_coeff.imag())) {
+        std::cout << "Result is NaN or infinity, dropping the result." << std::endl;
+        std::cout<<"result is " <<raw_coeff<<std::endl;
+		cutoff_num++;    
+    }
+	else if ((abs(raw_coeff.real()) > param.cutoff_value || abs(raw_coeff.imag()) > param.cutoff_value) && ord>2){
+		std::cout << "Large value detected." << std::endl;
+        std::cout<<"result is " <<raw_coeff<<std::endl;
+		cutoff_num++; 
 		
-	if (ami.overflow_detected) {
+	}	
+	else if (ami.overflow_detected) {
 			std::cout<<"over flow detected \n ";
 			std::cout<<"result is " <<raw_coeff<<std::endl;
 			cutoff_num++;     		
 		}
+	
 	else{
         localSum +=  result;
         localSumOfSquares += std::complex<double> (std::pow(result.real(),2),std::pow(result.imag(),2)) ;

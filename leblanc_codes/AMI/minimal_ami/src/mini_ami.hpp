@@ -30,7 +30,7 @@
 
 class mband{
 private:
-  
+
 public: 
 std::vector<vector<int>> interaction_legs; //= {{1,1,1,1},{2,2,1,1},{2,1,2,1},{1,2,2,1},{2,1,1,2},{1,2,1,2},
 //{1,1,2,2},{2,2,2,2}};
@@ -72,7 +72,8 @@ struct params_param {
     bool hatree_fock=true;
     double tp;
     double tperp;
-	double tperp_p;
+	double tpp;
+	double tbs;
 	int MC_num;
 	int in;
 	int out;
@@ -84,9 +85,12 @@ struct params_param {
 	double cutoff_value=1e8;
 	int mfreq_indp = 0;
 	int G_FUNC=0;
+	double SOC=0;
+	double t_orb=0;	
 };
 double Trilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
 double Bilayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
+double Quadlayer_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
 void assign_label(AmiGraph::graph_t &g1, AmiGraph::edge_vector_t edge,vector<int> vector);
 std::vector<std::vector<int>>  findmatch(std::vector<int> v1,AmiGraph::edge_vector_t &inter_vec);
 std::vector<int> generate_edge_species(AmiGraph::graph_t &g, AmiGraph::edge_vector_t edge);
@@ -157,12 +161,19 @@ void solve_pp_ord3(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_e
 void solve_pp_ord4(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex);
 void solve_pp_ord(AmiGraph::graph_t &graph,AmiGraph::edge_vector_t &fermionic_edge,std::vector<std::vector<int>> &fermionic_species,std::vector<std::vector<std::vector<int>>> &interaction_species,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &bandindex);
 void pp_sampler( AmiGraph::graph_t &graph, mband::sampler_collector& collector,std::vector<int> &bandindex);
-double gfunc_pp(std::vector<double> momenta, params_param &param);
+std::complex<double> gfunc_pp(std::vector<double> momenta, params_param &param,int bandindex);
 
 std::tuple<std::complex<double>, std::complex<double>, int> lcalc_sampled_pp(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<std::vector<int>> &gkkp_Alpha,std::vector<int> &Utype,
  std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param);
+/////////////////triangular///////////////
 
- 
+double Triangular_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
+std::pair<double, double> generate_hex_bz(); 
+//////////////////////////////SRO////////////
+double alpha(const std::complex<double>& A, const std::complex<double>& B, const std::complex<double>& C, const std::complex<double>& g, const std::complex<double>& n, const std::complex<double>& s);
+double beta(const std::complex<double>& A, const std::complex<double>& B, const std::complex<double>& C, const std::complex<double>& g, const std::complex<double>& n, const std::complex<double>& s);
+double gamma(const std::complex<double>& A, const std::complex<double>& B, const std::complex<double>& C, const std::complex<double>& g, const std::complex<double>& n, const std::complex<double>& s);
+double SRO_Hubbard_Energy(NewAmiCalc::ext_vars ext,std::vector<double> momenta, int species,mband::params_param param);
 };
 /// A few simple functions
 template<typename T>

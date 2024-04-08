@@ -11,7 +11,7 @@ int seed =0;
 AmiBase::graph_type baseType;
 if (params.graph_type == 0) {
     baseType = AmiBase::Sigma;
-} else  if (params.graph_type == 1){
+} else if (params.graph_type ==1) {
     baseType = AmiBase::Pi_ppud;
 }
 
@@ -29,7 +29,7 @@ MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
 MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
 
-if (params.molecular==0&& params.lattice_type == 1){
+if (params.molecular==0&& (params.lattice_type == 1 || params.lattice_type == 5)){
     interaction = readFile("../loader/Hubbard_U.txt");
 	interaction_value = readFile1("../loader/Hubbard_U.txt",5);
 	 band_energy = {0,0};
@@ -40,11 +40,11 @@ if (params.molecular==0&& params.lattice_type == 1){
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
 	if (params.graph_type==0){
-	g.read_ggmp("../graphs/ggm_all/",ggm, max);
+	g.read_ggmp(params.graph,ggm, max);
 	}
 	else if (params.graph_type==1)
 	{
-	g.read_ggmp("../graphs/ggm_ppvertex/",ggm, max);	
+	g.read_ggmp(params.graph,ggm, max);	
 	}
 	
 	std::cout<<"Completed read"<<std::endl;
@@ -55,21 +55,33 @@ if (params.molecular==0&& params.lattice_type == 1){
 for(int i=0; i<extern_list.size();i++){
 		std::cout<<extern_list[i].BETA_<<" "<<extern_list[i].MU_<<" "<< extern_list[i].H_<<" "<<extern_list[i].KDIM_<<" "<<extern_list[i].external_k_list_[0][0]<<" "<<extern_list[i].external_k_list_[0][1] <<" "<<extern_list[i].external_freq_[0]<<std::endl;
 	}
-
-	 g.print_all_edge_info(ggm[2][0].graph_vec[0]);
 }
 
-else if (params.molecular==0&& (params.lattice_type ==2||params.lattice_type==4) ){
+
+else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type ==4 ||params.lattice_type ==7 || params.lattice_type ==8 ) ){
 	 if (params.lattice_type==2){
-		 interaction = readFile("../loader/bilayer_interaction.txt");
-		 interaction_value = readFile1("../loader/bilayer_interaction.txt",5);}
+     interaction = readFile("../loader/bilayer_interaction.txt");
+	 interaction_value = readFile1("../loader/loader/bilayer_interaction.txt",5);
+     }
 	 else if (params.lattice_type==4){
-		 interaction = readFile("../loader/trilayer_interaction.txt");
-		 interaction_value = readFile1("../loader/trilayer_interaction.txt",5);	 
+     interaction = readFile("../loader/trilayer_interaction.txt");
+	 interaction_value = readFile1("../loader/loader/trilayer_interaction.txt",5);
+     }
+	 else if (params.lattice_type==7){
+		 std::cout << " opening interaction file for SRO " <<std::endl;
+		 interaction = readFile("../loader/SRO_interaction.txt");
+		 print2d(interaction);
+		 interaction_value = readFile1("../loader/SRO_interaction.txt",5);	 
 	}
-     band_energy = {0,0};
-    print2d(interaction);
-	std::cout<<"print ends"<<std::endl;
+	 else if (params.lattice_type==8){
+		 std::cout << " opening interaction file for quadlayer_interaction " <<std::endl;
+		 interaction = readFile("../loader/quadlayer_interaction.txt");
+		 print2d(interaction);
+		 interaction_value = readFile1("../loader/quadlayer_interaction.txt",5);	 
+	}
+	 
+	 band_energy = {0,0};
+
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;	
 	std::string infile("../loader/ext_vars.dat");
 	std::cout<<"Reading external parameters from ext_vars.dat"<<std::endl;
@@ -78,11 +90,11 @@ else if (params.molecular==0&& (params.lattice_type ==2||params.lattice_type==4)
 	int max=params.max_ord;
 	
 	if (params.graph_type==0){
-	g.read_ggmp("../graphs/ggm_sigma_no_tp/",ggm, max);
+	g.read_ggmp(params.graph,ggm, max);
 	}
 	else if (params.graph_type==1)
 	{
-	g.read_ggmp("../graphs/ggm_ppvertex_ext_hubb/",ggm, max);	
+	g.read_ggmp(params.graph,ggm, max);	
 	}
 	g.ggm_label(ggm,0);    
 	
@@ -91,9 +103,10 @@ else if (params.molecular==0&& (params.lattice_type ==2||params.lattice_type==4)
 		std::cout<<extern_list[i].BETA_<<" "<<extern_list[i].MU_<<" "<< extern_list[i].H_<<" "<<extern_list[i].KDIM_<<" "<<extern_list[i].external_k_list_[0][0]<<" "<<extern_list[i].external_k_list_[0][1] <<" "<<extern_list[i].external_freq_[0]<<std::endl;
 	
 		}	
+
   }
- 
-  else if (params.molecular==0&& params.lattice_type ==3){
+  
+  else if (params.molecular==0&& (params.lattice_type ==3 ||params.lattice_type ==6) ){
     interaction = readFile("../loader/extended_U.txt");
 	interaction_value = readFile1("../loader/extended_U.txt",5);
     band_energy = {0,0};
@@ -105,9 +118,9 @@ else if (params.molecular==0&& (params.lattice_type ==2||params.lattice_type==4)
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
 	if (params.graph_type==0){
-	g.read_ggmp("../graphs/ggm_sigma_no_tp/",ggm, max);}
+	g.read_ggmp(params.graph,ggm, max);}
 	else if (params.graph_type==1)
-	{g.read_ggmp("../graphs/ggm_ppvertex_ext_hubb/",ggm,max);}
+	{g.read_ggmp(params.graph,ggm,max);}
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
@@ -131,7 +144,7 @@ else if (params.molecular==0&& (params.lattice_type ==2||params.lattice_type==4)
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;		
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_sigma_nofock_notp_nl/",ggm, max);
+	g.read_ggmp(params.graph,ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0);    
@@ -146,7 +159,7 @@ else if (params.molecular==0&& (params.lattice_type ==2||params.lattice_type==4)
 	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp("../graphs/ggm_sigma_nofock_notp_nl/",ggm, max);
+	g.read_ggmp(params.graph,ggm, max);
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0);    
@@ -179,10 +192,10 @@ for (int i = min_ord; i < max_ord+1; ++i) {
         for (int k = 0; k < ggm[i][j].graph_vec.size(); ++k) {
             mband::sampler_collector sigma_collector;
 			if (params.graph_type==0){
-			std::cout << "sampling sigma with params " << params.graph_type<<std::endl;
+			std::cout <<"Sampling sigma with params  " << params.graph_type;
             mb.sigma_sampler(ggm[i][j].graph_vec[k], sigma_collector);}
 			else if (params.graph_type ==1){
-				std::cout << "sampling particle particle with params " << params.graph_type<<std::endl;
+			        std::cout <<"Sampling particle particle with params  " << params.graph_type;
 				mb.pp_sampler(ggm[i][j].graph_vec[k], sigma_collector,bandindex);}
 			
 			if (!sigma_collector.fermionic_edge_species.empty()){
@@ -195,7 +208,9 @@ for (int i = min_ord; i < max_ord+1; ++i) {
 					sigma_ToSum.push_back(sigma_collector);
 					sigma_FromGraph.push_back(ggm[i][j].graph_vec[k]);
 				}
-		
+			
+				
+				
 			}
 		}
 	}
@@ -311,20 +326,38 @@ double U = 1;
 
 std::ofstream outputFile;
 if (params.lattice_type==1){
-outputFile.open("../results/lattice/Hubbard/output1.txt");
+outputFile.open("../results/lattice/Hubbard/output_1.txt");
 }
 else if (params.lattice_type==2){
-outputFile.open("../results/lattice/Bilayer_Hubbard/output2.txt");
+outputFile.open("../results/lattice/Bilayer_Hubbard/output_2.txt");
 	
 }
 else if (params.lattice_type==4){
-outputFile.open("../results/lattice/Trilayer_Hubbard/output4.txt");
+outputFile.open("../results/lattice/Trilayer_Hubbard/output_4.txt");
 	
 }
 else if (params.lattice_type==3){
-outputFile.open("../results/lattice/extended/output3.txt");
+outputFile.open("../results/lattice/extended/output_3.txt");
 	
-}	// Open the result file for writing
+}
+else if (params.lattice_type==5 ){
+outputFile.open("../results/lattice/Triangular_lattice/output_5.txt");
+
+}
+else if (params.lattice_type==6){
+outputFile.open("../results/lattice/Triangular_lattice_ext/output_6.txt");
+
+}
+else if (params.lattice_type==7){
+outputFile.open("../results/lattice/Sro/output_7.txt");
+
+}
+else if (params.lattice_type==8){
+outputFile.open("../results/lattice/Quadlayer_Hubbard/output_8.txt");
+
+}
+
+// Open the result file for writing
 
     if (outputFile.is_open()) {
         std::cout << "Number of processes: " << numProcesses << std::endl;
@@ -345,10 +378,10 @@ outputFile.open("../results/lattice/extended/output3.txt");
                     std::cout << g.graph_order(sigma_ToSum[i].graph) << " ";
                     outputFile << g.graph_order(sigma_ToSum[i].graph) << " ";
 
-                    std::cout << extern_list[j].BETA_ << " " << extern_list[j].MU_.real() << " " <<extern_list[j].MU_.imag() << " "<< extern_list[j].H_ << " "
-                               << extern_list[j].external_k_list_[0][0] << " " << extern_list[j].external_k_list_[0][1]
-                               << " " << extern_list[j].external_freq_[0].real() << " " << extern_list[j].external_freq_[0].imag()<<" ";
-                    outputFile << extern_list[j].BETA_ << " " << extern_list[j].MU_.real() << " " <<extern_list[j].MU_.imag() << " "<< extern_list[j].H_ << " "
+                    std::cout << extern_list[j].BETA_ << " " << extern_list[j].MU_.real() << " "<<extern_list[j].MU_.imag() << " " << extern_list[j].H_ << " "
+                              << extern_list[j].external_k_list_[0][0] << " " << extern_list[j].external_k_list_[0][1]
+                              << " " << extern_list[j].external_freq_[0].real() << " " << extern_list[j].external_freq_[0].imag()<<" ";
+                    outputFile << extern_list[j].BETA_ << " " << extern_list[j].MU_.real() << " "<< extern_list[j].MU_.imag() << " "<< extern_list[j].H_ << " "
                                << extern_list[j].external_k_list_[0][0] << " " << extern_list[j].external_k_list_[0][1]
                                << " " << extern_list[j].external_freq_[0].real() << " " << extern_list[j].external_freq_[0].imag()<<" ";
 
@@ -384,17 +417,20 @@ std::cout << "molecular: " << params.molecular << std::endl;
 std::cout << "E_reg: " << params.E_reg << std::endl;
 std::cout << "lattice_type: " << params.lattice_type << std::endl;
 std::cout << "set_precision: " << params.set_precision << std::endl;
-std::cout << "hatree_fock: " << params.hatree_fock << std::endl;
+std::cout << "hatree_fock: " << std::boolalpha << params.hatree_fock << std::endl;
 std::cout << "tp: " << params.tp << std::endl;
-std::cout << "tperp_p: " << params.tperp_p << std::endl;
+std::cout << "tpp: " << params.tpp << std::endl;
 std::cout << "tperp: " << params.tperp << std::endl;
+std::cout << "tbs: " << params.tbs << std::endl;
+std::cout << "SOC: " << params.SOC << std::endl;
+std::cout << "t_orb: " << params.t_orb << std::endl;
 std::cout << "Mc_num" << params.MC_num << std::endl;
 std::cout << "max: " << params.max_ord << std::endl;
 std::cout << "min_ord" << params.min_ord << std::endl;
 std::cout << "line1 " << params.in<<" " <<params.out<< std::endl;
 std::cout << "V " << params.V<<" "  <<std::endl;
 std::cout << "time" << params.time<<" " << std::endl;
-
+std::cout << "G_FUNC " << params.G_FUNC<<" " << std::endl;
 std::cout << "Global Total Sample Count: " << globalTotalSampleCount << std::endl;
 std::cout << "sample per process: " << samplesPerProcess<< std::endl;
 	}
@@ -444,6 +480,7 @@ std::vector<int> line = {params.in,params.out};
         endGraph += remainder;
     }
  
+
     int currentGraphCount = 0;
    
     for (int i = min_ord; i <= max_ord; ++i) {
@@ -455,10 +492,10 @@ std::vector<int> line = {params.in,params.out};
 					if (line[0]==-1 && line[1]==-1){
 					std::string filename;
 					if (params.molecular_type==1){
-                    filename = "../results/molecular/h2/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h2_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					else if (params.molecular_type==2){
-                    filename = "../results/molecular/h10/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h10_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					mb.molecular_solver(ggm[i][j].graph_vec[k], output_collector, Beta_ext_vec, Mfreq_ext_vec,filename);		
                     
@@ -466,10 +503,10 @@ std::vector<int> line = {params.in,params.out};
 					else{
 					std::string filename;
                     if (params.molecular_type==1){
-                    filename = "../results/molecular/h2/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h2/h2_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					else if (params.molecular_type==2){
-                    filename = "../results/molecular/h10/output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h10/h10_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					mb.molecular_solver_ext(ggm[i][j].graph_vec[k], output_collector, Beta_ext_vec, Mfreq_ext_vec,line,filename);	
 					}

@@ -691,7 +691,7 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 
     
 
-	if (param.lattice_type ==2 || param.lattice_type==3 ||param.lattice_type==4 || param.lattice_type==6  ){		
+	if (param.lattice_type ==2 || param.lattice_type==3 ||param.lattice_type==4 || param.lattice_type==6 || param.lattice_type==7 || param.lattice_type == 8 ){		
 		std::vector<std::vector<double>> V_momenta;
 		V_momenta.reserve(bosonic_Alpha.size());
 
@@ -732,6 +732,14 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
                                 }
                         }
                 }
+		if (param.lattice_type==8){
+			//std::cout<< "triggering pair hopping for quad layer\n";
+                        for (int i =0;i<Utype.size();i++){
+                                if (Utype[i]>31 && Utype[i]<44){
+                                form_factor= form_factor*(1.0+  2*param.V*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])));
+                                }
+                        }
+                }
 		
 		if (param.lattice_type ==6){
 			for (int i = 0; i<Utype.size();i++){
@@ -747,13 +755,19 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 		if (param.lattice_type ==7){
 			for (int i = 0; i<Utype.size();i++){
 				if (Utype[i] <= 5){
-				form_factor= form_factor*( 2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
-																		4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));
+				//std::cout << " triggering extended result  with Utype " << Utype[i] << "with value " << ext_params.MU_.imag() << "and " <<ext_params.H_ <<"respectively" << std::endl; 
+				form_factor= form_factor*( 2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));
 						}
 				else if(Utype[i] >=6 && Utype[i]<=11)  {
-				form_factor= form_factor*(1.0+  2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
-																						4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));	
-				}	
+				 //std::cout << " triggering extended result  with Utype " << Utype[i] << "with value " << ext_params.MU_.imag() << "and " <<ext_params.H_ <<"respectively" << std::endl;
+				form_factor= form_factor*(1.0+  2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));	
+				}
+				else if(Utype[i] >=12 && Utype[i]<=35)  {
+				double D = 1-2*ext_params.MU_.real();
+				//std::cout << " triggering extended result  with Utype " << Utype[i] << "with value " << ext_params.MU_.imag() << "and " <<ext_params.H_ <<"respectively" << std::endl;
+				form_factor= form_factor*(D+  2*ext_params.MU_.imag()*(std::cos(V_momenta[i][0])+std::cos(V_momenta[i][1])) +
+				4*ext_params.H_*(std::cos(V_momenta[i][0])*std::cos(V_momenta[i][1])));
+				}
 			}
 		}
 		
@@ -786,8 +800,11 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 			if (i ==1){g1 = std::conj(g1);}
 			gk = gk*g1;
 	
-        }
+        	
+		}
+	
 	}
+
 	
 		
 
@@ -804,6 +821,10 @@ std::tuple<std::complex<double>, std::complex<double>, int> mband::lcalc_sampled
 	   }
 			if (param.lattice_type == 4 ) {
                 energy.push_back(mband::Trilayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
+            }
+			if (param.lattice_type == 8 ) {
+				//std::cout<<"triggering quadlayer energy"<<std::endl;
+                energy.push_back(mband::Quadlayer_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
             }
 			if (param.lattice_type == 5 || param.lattice_type == 6 ) {
                 energy.push_back(mband::Triangular_Hubbard_Energy(ext_params, summed_momenta[i], Species[i],param));
