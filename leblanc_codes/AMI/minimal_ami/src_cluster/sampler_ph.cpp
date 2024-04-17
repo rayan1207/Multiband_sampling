@@ -194,10 +194,30 @@ void mband::assign_initial_species(AmiGraph::graph_t &g,
                             AmiGraph::edge_vector_t ext_bosonic_source,
                             AmiGraph::edge_vector_t ext_bosonic_target,
                             std::vector<int> possible_interaction){
+	 
+								
     g[ext_bosonic_source[0]].g_struct_.species_ = possible_interaction[1] / 10;
     g[ext_bosonic_source[1]].g_struct_.species_ = possible_interaction[1] % 10;
     g[ext_bosonic_target[1]].g_struct_.species_ = possible_interaction[0] / 10 ;
     g[ext_bosonic_target[0]].g_struct_.species_ = possible_interaction[0] % 10;
+}
+///////added functionality
+bool mband::check_valid_initial_species(AmiGraph::graph_t &g,
+                            AmiGraph::edge_vector_t ext_bosonic_source,
+                            AmiGraph::edge_vector_t ext_bosonic_target,
+                            std::vector<int> possible_interaction){
+	 
+	if (g[ext_bosonic_source[0]].g_struct_.species_ == possible_interaction[1] / 10 &&
+    g[ext_bosonic_source[1]].g_struct_.species_ == possible_interaction[1] % 10 &&
+    g[ext_bosonic_target[1]].g_struct_.species_ == possible_interaction[0] / 10 && 
+    g[ext_bosonic_target[0]].g_struct_.species_ == possible_interaction[0] % 10 ){
+		return true;
+		
+	}
+	else { std::cout <<"Initial assingment band species produced spurious comination\n";
+
+
+	return false;}
 }
 
 
@@ -212,6 +232,7 @@ void mband::findInitialSpeciesPH(AmiGraph::graph_t &g,
     mband::find_interaction_of_target(g, external_bosonic_edges[0], ext_bosonic_target);
     mband::assign_initial_species(g, ext_bosonic_source, ext_bosonic_target, band_ind);
 }
+
 
 
 void mband::find4VertexInteractions(AmiGraph::graph_t &graph, AmiGraph::edge_vector_t &internal_b_vector, std::vector<AmiGraph::edge_vector_t> &f_vector){
@@ -252,7 +273,7 @@ void mband::ph_sampler(AmiGraph::graph_t &graph, mband::sampler_collector &colle
     AmiGraph::edge_vector_t ext_bosonic_left;
     AmiGraph::edge_vector_t ext_bosonic_right;
     mband::findInitialSpeciesPH(graph, bandindex, external_bosonic_edges, ext_bosonic_right,  ext_bosonic_left);
-
+    if (mband::check_valid_initial_species(graph,  ext_bosonic_right,  ext_bosonic_left,bandindex)){
     std::cout << "print external bosonic edges" << std::endl;
     for (auto i : external_bosonic_edges){
         g_ph.print_edge_info(i, graph);
@@ -314,7 +335,11 @@ void mband::ph_sampler(AmiGraph::graph_t &graph, mband::sampler_collector &colle
     }
 	for (auto interac: collector.interaction_species){
 	collector.Uindex.push_back(interaction_index(interac));
+		}
 	}
+	else {
+		
+	std::cout << "Invalid species assigned in the initial band assignment stage. Combinations ignored" <<std::endl;}
 
 }
 

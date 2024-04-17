@@ -191,8 +191,11 @@ void assign_initial_species(AmiGraph::graph_t &g1, AmiGraph::edge_vector_t ext_b
 void findInitialSpeciesPH(AmiGraph::graph_t &g, std::vector<int> &band_ind, AmiGraph::edge_vector_t &external_bosonic_edges, AmiGraph::edge_vector_t &ext_bosonic_source, AmiGraph::edge_vector_t &ext_bosonic_target);
 void ph_sampler(AmiGraph::graph_t &graph, mband::sampler_collector& collector, std::vector<int> &bandindex, std::vector<int>& possible_bands);
 std::tuple<std::complex<double>, std::complex<double>, int> lcalc_sampled_ph(AmiGraph::graph_t &gself, std::vector<AmiBase::epsilon_t>& Epsilon, std::vector<AmiBase::alpha_t>& Alpha,std::vector<std::vector<int>> &bosonic_Alpha,std::vector<int> &Utype,
- std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param);
-
+std::vector<int>& Species,NewAmiCalc::ext_vars& ext_params,int MC_num,params_param& param);
+bool check_valid_initial_species(AmiGraph::graph_t &g,
+                            AmiGraph::edge_vector_t ext_bosonic_source,
+                            AmiGraph::edge_vector_t ext_bosonic_target,
+                            std::vector<int> possible_interaction);
 
 
 };
