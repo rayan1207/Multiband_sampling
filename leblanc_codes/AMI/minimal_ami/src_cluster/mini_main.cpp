@@ -6,16 +6,13 @@ int main(int argc, char** argv)
 auto   startTime = std::chrono::high_resolution_clock::now();
 AmiBase ami;
 mband::params_param params;
-params_loader("../loader/params.txt", params);
+params_loader("params.txt", params);
 int seed =0;
 AmiBase::graph_type baseType;
 if (params.graph_type == 0) {
     baseType = AmiBase::Sigma;
 } else if (params.graph_type ==1) {
     baseType = AmiBase::Pi_ppud;
-}
-else if (params.graph_type ==2) {
-    baseType = AmiBase::Pi_phuu;
 }
 
 AmiGraph g(baseType, seed);
@@ -25,31 +22,34 @@ NewAmiCalc::external_variable_list extern_list;
 std::vector<std::vector<int>> interaction;
 std::vector<double> interaction_value;
 std::vector<double> band_energy;
-std::vector<int> possible_bands;
+
 MPI_Init(&argc, &argv);
 int numProcesses, rank;
 MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
 MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
 
-
 if (params.molecular==0&& (params.lattice_type == 1 || params.lattice_type == 5)){
-    interaction = readFile("../loader/Hubbard_U.txt");
-	interaction_value = readFile1("../loader/Hubbard_U.txt",5);
+    interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/Hubbard_U.txt");
+	interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/Hubbard_U.txt",5);
 	 band_energy = {0,0};
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;
-	std::string infile("../loader/ext_vars.dat");
+	std::string infile("ext_vars.dat");
 	std::cout<<"Reading external parameters from ext_vars.dat"<<std::endl;
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
+	if (params.graph_type==0){
+	g.read_ggmp(params.graph,ggm, max);
+	}
+	else if (params.graph_type==1)
+	{
 	g.read_ggmp(params.graph,ggm, max);	
-	
+	}
 	
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
-	possible_bands={1,2};
 
     std::cout<<"External parameters read are"<<std::endl;
 for(int i=0; i<extern_list.size();i++){
@@ -60,42 +60,40 @@ for(int i=0; i<extern_list.size();i++){
 
 else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type ==4 ||params.lattice_type ==7 || params.lattice_type ==8 ) ){
 	 if (params.lattice_type==2){
-     interaction = readFile("../loader/bilayer_interaction.txt");
-	 interaction_value = readFile1("../loader/loader/bilayer_interaction.txt",5);
-	 possible_bands={1,2,3,4};
+     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/bilayer_interaction.txt");
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/loader/bilayer_interaction.txt",5);
      }
 	 else if (params.lattice_type==4){
-     interaction = readFile("../loader/trilayer_interaction.txt");
-	 interaction_value = readFile1("../loader/loader/trilayer_interaction.txt",5);
-	  possible_bands={1,2,3,4,5,6};
+     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/trilayer_interaction.txt");
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/loader/trilayer_interaction.txt",5);
      }
 	 else if (params.lattice_type==7){
-		 std::cout << " opening interaction file for SRO " <<std::endl;
-		 interaction = readFile("../loader/SRO_interaction.txt");
-		 print2d(interaction);
-		 interaction_value = readFile1("../loader/SRO_interaction.txt",5);
-		possible_bands={1,2,3,4,5,6};		 
+		 interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/SRO_interaction.txt");
+		 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/SRO_interaction.txt",5);	 
 	}
-	 else if (params.lattice_type==8){
+	else if (params.lattice_type==8){
 		 std::cout << " opening interaction file for quadlayer_interaction " <<std::endl;
-		 interaction = readFile("../loader/quadlayer_interaction.txt");
+		 interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/quadlayer_interaction.txt");
 		 print2d(interaction);
-		 interaction_value = readFile1("../loader/quadlayer_interaction.txt",5);	
-         possible_bands={1,2,3,4,5,6,7,8};			 
+		 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/quadlayer_interaction.txt",5);	 
 	}
 	 
 	 band_energy = {0,0};
 
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;	
-	std::string infile("../loader/ext_vars.dat");
+	std::string infile("ext_vars.dat");
 	std::cout<<"Reading external parameters from ext_vars.dat"<<std::endl;
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
 	
-
+	if (params.graph_type==0){
+	g.read_ggmp(params.graph,ggm, max);
+	}
+	else if (params.graph_type==1)
+	{
 	g.read_ggmp(params.graph,ggm, max);	
-	
+	}
 	g.ggm_label(ggm,0);    
 	
 	std::cout<<"External parameters read are"<<std::endl;
@@ -107,18 +105,20 @@ else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type =
   }
   
   else if (params.molecular==0&& (params.lattice_type ==3 ||params.lattice_type ==6) ){
-    interaction = readFile("../loader/extended_U.txt");
-	interaction_value = readFile1("../loader/extended_U.txt",5);
+    interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/extended_U.txt");
+	interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/extended_U.txt",5);
     band_energy = {0,0};
 
     std::cout<< "Constructing AmiGraph object using seed: "<<seed <<" " <<std::endl;	
-	std::string infile("../loader/ext_vars.dat");
+	std::string infile("ext_vars.dat");
 	std::cout<<"Reading external parameters from ext_vars.dat"<<std::endl;
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	g.read_ggmp(params.graph,ggm,max);
-	possible_bands={1,2};
+	if (params.graph_type==0){
+	g.read_ggmp(params.graph,ggm, max);}
+	else if (params.graph_type==1)
+	{g.read_ggmp(params.graph,ggm,max);}
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
@@ -133,9 +133,9 @@ else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type =
   }
   
   else if (params.molecular==1&& params.molecular_type ==1){
-     interaction = readFile("../loader/h2sto_U.txt");
-	 interaction_value = readFile1("../loader/h2sto_U.txt",5);
-	 band_energy = readFile1("../loader/h2sto_e0.txt",2);
+     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/h2sto_U.txt");
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/h2sto_U.txt",5);
+	 band_energy = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/h2sto_e0.txt",2);
 
 	 
 
@@ -149,9 +149,9 @@ else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type =
   }
   
     else if (params.molecular==1&& params.molecular_type ==2){
-     interaction = readFile("../loader/ccpdvz.txt");
-	 interaction_value = readFile1("../loader/ccpdvz.txt",5);
-	 band_energy = readFile1("../loader/ccpdvz_h.txt",2);
+     interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/ccpdvz.txt");
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/ccpdvz.txt",5);
+	 band_energy = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/ccpdvz_h.txt",2);
 	
 
 	
@@ -195,9 +195,6 @@ for (int i = min_ord; i < max_ord+1; ++i) {
 			else if (params.graph_type ==1){
 			        std::cout <<"Sampling particle particle with params  " << params.graph_type;
 				mb.pp_sampler(ggm[i][j].graph_vec[k], sigma_collector,bandindex);}
-			else if (params.graph_type ==2){
-			        std::cout <<"Sampling particle particle with params  " << params.graph_type;
-				mb.ph_sampler(ggm[i][j].graph_vec[k], sigma_collector,bandindex,possible_bands);}
 			
 			if (!sigma_collector.fermionic_edge_species.empty()){
 				
@@ -288,18 +285,6 @@ while (std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime)
 					
                 }
             }
-			else if (params.graph_type==2) {
-                for (int k = 0; k < speciesSize; k++) {
-					    
-                        std::tuple<std::complex<double>, std::complex<double>, int> result;
-                        result = mb.lcalc_sampled_ph(sigma_ToSum[i].graph, sigma_ToSum[i].Epsilon, sigma_ToSum[i].Alpha, sigma_ToSum[i].bosonic_Alpha, sigma_ToSum[i].Uindex[k], sigma_ToSum[i].fermionic_edge_species[k],
-                                                        extern_list[j], samplesPerProcess, params);				       
-                        localSums[i][j][k] += std::get<0>(result);
-                        localSumSquared[i][j][k] += std::get<1>(result);
-						localSample[i][j][k] += std::get<2>(result);
-					
-                }
-            }
 			
 			
             MPI_Barrier(MPI_COMM_WORLD);
@@ -339,34 +324,34 @@ double U = 1;
 
 std::ofstream outputFile;
 if (params.lattice_type==1){
-outputFile.open("../results/lattice/Hubbard/output_1.txt");
+outputFile.open("output_1.txt");
 }
 else if (params.lattice_type==2){
-outputFile.open("../results/lattice/Bilayer_Hubbard/output_2.txt");
-	
-}
-else if (params.lattice_type==4){
-outputFile.open("../results/lattice/Trilayer_Hubbard/output_4.txt");
+outputFile.open("output_2.txt");
 	
 }
 else if (params.lattice_type==3){
-outputFile.open("../results/lattice/extended/output_3.txt");
+outputFile.open("output_3.txt");
 	
 }
+else if (params.lattice_type==4){
+outputFile.open("output_4.txt");
+
+}
 else if (params.lattice_type==5 ){
-outputFile.open("../results/lattice/Triangular_lattice/output_5.txt");
+outputFile.open("output_5.txt");
 
 }
 else if (params.lattice_type==6){
-outputFile.open("../results/lattice/Triangular_lattice_ext/output_6.txt");
+outputFile.open("output_6.txt");
 
 }
 else if (params.lattice_type==7){
-outputFile.open("../results/lattice/Sro/output_7.txt");
+outputFile.open("output_7.txt");
 
 }
 else if (params.lattice_type==8){
-outputFile.open("../results/lattice/Quadlayer_Hubbard/output_8.txt");
+outputFile.open("output_8.txt");
 
 }
 
