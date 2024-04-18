@@ -14,6 +14,9 @@ if (params.graph_type == 0) {
 } else if (params.graph_type ==1) {
     baseType = AmiBase::Pi_ppud;
 }
+else if (params.graph_type ==2) {
+    baseType = AmiBase::Pi_phuu;
+}
 
 AmiGraph g(baseType, seed);
 
@@ -22,7 +25,7 @@ NewAmiCalc::external_variable_list extern_list;
 std::vector<std::vector<int>> interaction;
 std::vector<double> interaction_value;
 std::vector<double> band_energy;
-
+std::vector<int> possible_bands;
 MPI_Init(&argc, &argv);
 int numProcesses, rank;
 MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
@@ -39,17 +42,13 @@ if (params.molecular==0&& (params.lattice_type == 1 || params.lattice_type == 5)
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	if (params.graph_type==0){
-	g.read_ggmp(params.graph,ggm, max);
-	}
-	else if (params.graph_type==1)
-	{
 	g.read_ggmp(params.graph,ggm, max);	
-	}
+	
 	
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
+	possible_bands={1,2};
 
     std::cout<<"External parameters read are"<<std::endl;
 for(int i=0; i<extern_list.size();i++){
@@ -61,21 +60,27 @@ for(int i=0; i<extern_list.size();i++){
 else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type ==4 ||params.lattice_type ==7 || params.lattice_type ==8 ) ){
 	 if (params.lattice_type==2){
      interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/bilayer_interaction.txt");
-	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/loader/bilayer_interaction.txt",5);
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/bilayer_interaction.txt",5);
+	 possible_bands={1,2,3,4};
      }
 	 else if (params.lattice_type==4){
      interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/trilayer_interaction.txt");
-	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/loader/trilayer_interaction.txt",5);
+	 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/trilayer_interaction.txt",5);
+	  possible_bands={1,2,3,4,5,6};
      }
 	 else if (params.lattice_type==7){
+		 std::cout << " opening interaction file for SRO " <<std::endl;
 		 interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/SRO_interaction.txt");
-		 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/SRO_interaction.txt",5);	 
+		 print2d(interaction);
+		 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/SRO_interaction.txt",5);
+		possible_bands={1,2,3,4,5,6};		 
 	}
-	else if (params.lattice_type==8){
+	 else if (params.lattice_type==8){
 		 std::cout << " opening interaction file for quadlayer_interaction " <<std::endl;
 		 interaction = readFile("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/quadlayer_interaction.txt");
 		 print2d(interaction);
-		 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/quadlayer_interaction.txt",5);	 
+		 interaction_value = readFile1("/project/6005092/rfarid/workflow_2023/leblanc_codes/AMI/minimal_ami/loader/quadlayer_interaction.txt",5);	
+         possible_bands={1,2,3,4,5,6,7,8};			 
 	}
 	 
 	 band_energy = {0,0};
@@ -87,13 +92,9 @@ else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type =
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
 	
-	if (params.graph_type==0){
-	g.read_ggmp(params.graph,ggm, max);
-	}
-	else if (params.graph_type==1)
-	{
+
 	g.read_ggmp(params.graph,ggm, max);	
-	}
+	
 	g.ggm_label(ggm,0);    
 	
 	std::cout<<"External parameters read are"<<std::endl;
@@ -115,10 +116,8 @@ else if (params.molecular==0&& (params.lattice_type ==2 || params.lattice_type =
 	g.ami.read_external(infile, extern_list);	
 	std::cout<<"Attempting to load self-energy graphs from example_graphs"<<std::endl;
 	int max=params.max_ord;
-	if (params.graph_type==0){
-	g.read_ggmp(params.graph,ggm, max);}
-	else if (params.graph_type==1)
-	{g.read_ggmp(params.graph,ggm,max);}
+	g.read_ggmp(params.graph,ggm,max);
+	possible_bands={1,2};
 	std::cout<<"Completed read"<<std::endl;
 	std::cout<<std::endl;
 	g.ggm_label(ggm,0); 
@@ -188,6 +187,7 @@ std::vector<AmiGraph::graph_t>sigma_FromGraph;
 for (int i = min_ord; i < max_ord+1; ++i) {
     for (int j = 0; j < ggm[i].size(); ++j) {
         for (int k = 0; k < ggm[i][j].graph_vec.size(); ++k) {
+			std::cout << "sampling graph with " << "o" << i << "_g" << j << "_n" << k <<std::endl;
             mband::sampler_collector sigma_collector;
 			if (params.graph_type==0){
 			std::cout <<"Sampling sigma with params  " << params.graph_type;
@@ -195,6 +195,9 @@ for (int i = min_ord; i < max_ord+1; ++i) {
 			else if (params.graph_type ==1){
 			        std::cout <<"Sampling particle particle with params  " << params.graph_type;
 				mb.pp_sampler(ggm[i][j].graph_vec[k], sigma_collector,bandindex);}
+			else if (params.graph_type ==2){
+			        std::cout <<"Sampling particle hole with params  " << params.graph_type;
+				mb.ph_sampler(ggm[i][j].graph_vec[k], sigma_collector,bandindex,possible_bands);}
 			
 			if (!sigma_collector.fermionic_edge_species.empty()){
 				
@@ -285,6 +288,18 @@ while (std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime)
 					
                 }
             }
+			else if (params.graph_type==2) {
+                for (int k = 0; k < speciesSize; k++) {
+					    
+                        std::tuple<std::complex<double>, std::complex<double>, int> result;
+                        result = mb.lcalc_sampled_ph(sigma_ToSum[i].graph, sigma_ToSum[i].Epsilon, sigma_ToSum[i].Alpha, sigma_ToSum[i].bosonic_Alpha, sigma_ToSum[i].Uindex[k], sigma_ToSum[i].fermionic_edge_species[k],
+                                                        extern_list[j], samplesPerProcess, params);				       
+                        localSums[i][j][k] += std::get<0>(result);
+                        localSumSquared[i][j][k] += std::get<1>(result);
+						localSample[i][j][k] += std::get<2>(result);
+					
+                }
+            }
 			
 			
             MPI_Barrier(MPI_COMM_WORLD);
@@ -330,25 +345,22 @@ else if (params.lattice_type==2){
 outputFile.open("output_2.txt");
 	
 }
+else if (params.lattice_type==4){
+outputFile.open("output_4.txt");
+	
+}
 else if (params.lattice_type==3){
 outputFile.open("output_3.txt");
 	
 }
-else if (params.lattice_type==4){
-outputFile.open("output_4.txt");
-
-}
 else if (params.lattice_type==5 ){
 outputFile.open("output_5.txt");
-
 }
 else if (params.lattice_type==6){
 outputFile.open("output_6.txt");
-
 }
 else if (params.lattice_type==7){
 outputFile.open("output_7.txt");
-
 }
 else if (params.lattice_type==8){
 outputFile.open("output_8.txt");
@@ -501,10 +513,10 @@ std::vector<int> line = {params.in,params.out};
 					else{
 					std::string filename;
                     if (params.molecular_type==1){
-                    filename = "h2/h2_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h2_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					else if (params.molecular_type==2){
-                    filename = "h10/h10_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
+                    filename = "h10_output_p" + std::to_string(rank)+ "_o" + std::to_string(i) + "_g" + std::to_string(j) +"_n" + std::to_string(k) + ".txt";
 					}
 					mb.molecular_solver_ext(ggm[i][j].graph_vec[k], output_collector, Beta_ext_vec, Mfreq_ext_vec,line,filename);	
 					}
